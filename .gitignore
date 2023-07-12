@@ -1,0 +1,35 @@
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Local development environment
+/.venv
+/.idea
+/.vscode
+/.pytest_cache
+
+# Streamlit cache and log files
+.streamlit/
+*.pkl
+*.log
+
+# Dependency directories
+/node_modules/
+/bower_components/
+
+# Data and sensitive information
+*.csv
+*.xlsx
+*.db
+*.env
+
+# Generated files
+/dist/
+/build/
+
+# Miscellaneous
+.DS_Store
+*.swp
+
+menv/
+myenv/
