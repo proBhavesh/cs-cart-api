@@ -1,5 +1,5 @@
-from auth.authuser import AuthService
-from store.session_store import SessionStore
+from api.auth import AuthService
+from api.store import SessionStore
 import os
 from dotenv import load_dotenv
 

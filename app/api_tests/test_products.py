@@ -1,5 +1,5 @@
 # example usage
-from shipments.orders import OrderService
+from client.api.products.get_products import ProductsService
 import os
 from dotenv import load_dotenv
 import json
@@ -10,7 +10,7 @@ vendor_email = os.getenv("VENDOR_EMAIL")
 vendor_api_key = os.getenv("VENDOR_API_KEY")
 
 # Initialize SessionStore and AuthService
-product_service = OrderService(vendor_email, vendor_api_key)
+product_service = ProductsService(vendor_email, vendor_api_key)
 
 # Use AuthService to send authentication requests
 json_response = product_service.send_auth_request()
