@@ -4,20 +4,27 @@ import requests
 import json
 from dotenv import load_dotenv
 
+# Importing the global data file to access the BASE_URL
+from backend.global_data import (
+    BASE_URL,
+)  # Adjusted import statement based on project structure
+
 
 class ProductsService:
+    # The URL parameter is now optional and defaults to None
     def __init__(
         self,
         vendor_email,
         vendor_api_key,
-        url="https://shop.migoiq.app/api/products",
+        url=None,
     ):
         if not vendor_email or not vendor_api_key:
             raise ValueError("Vendor email and API key must be set")
         self.credentials = base64.b64encode(
             f"{vendor_email}:{vendor_api_key}".encode()
         ).decode()
-        self.url = url
+        # If no URL is provided, it defaults to BASE_URL from the global_data file
+        self.url = url if url else BASE_URL
 
     def send_auth_request(self):
         headers = {

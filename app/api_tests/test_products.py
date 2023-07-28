@@ -1,5 +1,5 @@
 # example usage
-from client.api.products.get_products import ProductsService
+from api.products import ProductsService
 import os
 from dotenv import load_dotenv
 import json

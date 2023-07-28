@@ -1,10 +1,10 @@
 Metadata-Version: 1.0
 Name: api
 Version: 0.1
-Summary: A Python API package for backend project
-Home-page: https://github.com/yourusername/backend
-Author: Your Name
-Author-email: your.email@example.com
+Summary: A Python API package that provided class to interact with CS-cart API
+Home-page: https://github.com/proBhavesh/
+Author: Bhavesh Choudhary
+Author-email: probhavsh@gmail.com
 License: UNKNOWN
 Description: UNKNOWN
 Platform: UNKNOWN

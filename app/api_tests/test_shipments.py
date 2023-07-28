@@ -1,5 +1,5 @@
 # example usage
-from shipments.shipments import ShipmentService
+from api.shipments import ShipmentService
 import os
 from dotenv import load_dotenv
 import json
