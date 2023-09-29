@@ -81,3 +81,43 @@ If you have any questions or suggestions regarding this project, feel free to co
 
 - Name: Bhavesh Choudhary
 - Email: probhavsh@gmail.com
+
+```
+IQ-10
+├─ README.md
+└─ app
+   ├─ api_tests
+   │  ├─ getpages.py
+   │  ├─ test_auth.py
+   │  ├─ test_orders.py
+   │  ├─ test_products.py
+   │  └─ test_shipments.py
+   ├─ backend
+   │  ├─ README.md
+   │  ├─ api
+   │  │  ├─ __init__.py
+   │  │  ├─ auth
+   │  │  │  ├─ __init__.py
+   │  │  │  └─ auth_user.py
+   │  │  ├─ products
+   │  │  │  ├─ __init__.py
+   │  │  │  └─ get_products.py
+   │  │  ├─ shipments
+   │  │  │  ├─ __init__.py
+   │  │  │  ├─ orders.py
+   │  │  │  └─ shipments.py
+   │  │  └─ store
+   │  │     ├─ __init__.py
+   │  │     └─ session_store.py
+   │  ├─ api.egg-info
+   │  │  ├─ PKG-INFO
+   │  │  ├─ SOURCES.txt
+   │  │  ├─ dependency_links.txt
+   │  │  └─ top_level.txt
+   │  ├─ global_data.py
+   │  └─ setup.py
+   ├─ client
+   │  └─ app.py
+   └─ requirements.txt
+
+```
