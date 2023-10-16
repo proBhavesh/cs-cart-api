@@ -5,7 +5,7 @@ import json
 from dotenv import load_dotenv
 
 # Importing the global data file to access the BASE_URL
-from backend.global_data import (
+from global_data import (
     BASE_URL,
 )  # Adjusted import statement based on project structure
 
@@ -24,7 +24,7 @@ class ProductsService:
             f"{vendor_email}:{vendor_api_key}".encode()
         ).decode()
         # If no URL is provided, it defaults to BASE_URL from the global_data file
-        self.url = url if url else BASE_URL
+        self.url = url if url else BASE_URL + "/api/products/"
 
     def send_auth_request(self):
         headers = {
@@ -42,9 +42,11 @@ class ProductsService:
         if response.status_code in [200, 201]:
             try:
                 json_response = response.json()
+                print(json_response)
                 return json_response
 
             except json.JSONDecodeError:
+                print(response.text)
                 raise ValueError("Response from server was not a valid JSON")
         else:
             raise ConnectionError(
