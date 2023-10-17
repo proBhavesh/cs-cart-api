@@ -4,10 +4,9 @@ import requests
 import json
 from dotenv import load_dotenv
 
-# Importing the global data file to access the BASE_URL
 from global_data import (
     BASE_URL,
-)  # Adjusted import statement based on project structure
+)
 
 
 class ProductsService:

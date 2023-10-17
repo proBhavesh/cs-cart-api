@@ -1,4 +1,6 @@
+menv
 backend_env
+api.egg-info/
 
 # Compiled Python files
 *.pyc
