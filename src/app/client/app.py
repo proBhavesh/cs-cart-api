@@ -45,15 +45,7 @@ if not session_token or not_valid_token:
     # Create a button that when clicked will redirect user to Descope login
     if st.button("Log In With Descope Flows"):
        
-        tenant_email = "vendor@example.com"
-        try:
-            resp = descope_client.saml.start(tenant=tenant_email, return_url=descope_url)
-            print ("Successfully started saml auth. URL: ")
-            print (resp)
-        except AuthException as error:
-            print ("Failed to start saml auth")
-            print ("Status Code: " + str(error.status_code))
-            print ("Error: " + str(error.error_message))
+        
         # Redirect to Descope login
         st.write(
             f'<a href="{descope_url}" target="_blank">Go to Descope Login</a>',
