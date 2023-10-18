@@ -22,6 +22,8 @@ except Exception as error:
     print("Failed to initialize Descope client. Error:")
     print(error)
 
+
+
 # Store session token if exists
 session_token = st.session_state.get("token", None)
 
@@ -38,10 +40,20 @@ not_valid_token = session_token and is_jwt_expired(session_token)
 # Show Descope login if no token or token is expired
 if not session_token or not_valid_token:
     # Descope login URL
-    descope_url = f"https://auth.descope.io/{PROJECT_ID}?flow={FLOW_ID}"
+    descope_url = "https://auth.descope.io/{PROJECT_ID}?flow={FLOW_ID}"
 
     # Create a button that when clicked will redirect user to Descope login
     if st.button("Log In With Descope Flows"):
+       
+        tenant_email = "vendor@example.com"
+        try:
+            resp = descope_client.saml.start(tenant=tenant_email, return_url=descope_url)
+            print ("Successfully started saml auth. URL: ")
+            print (resp)
+        except AuthException as error:
+            print ("Failed to start saml auth")
+            print ("Status Code: " + str(error.status_code))
+            print ("Error: " + str(error.error_message))
         # Redirect to Descope login
         st.write(
             f'<a href="{descope_url}" target="_blank">Go to Descope Login</a>',
