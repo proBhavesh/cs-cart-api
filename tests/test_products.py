@@ -15,6 +15,8 @@ print(vendor_api_key, vendor_email)
 product_service = ProductsService(vendor_email, vendor_api_key)
 
 # Use AuthService to send authentication requests
-json_response = product_service.send_auth_request()
+json_response = product_service.get_products()
+# json_response = product_service.create_product("lenovo laptop", [2], "5000")
+
 print(json.dumps(json_response, indent=4))
 # print(auth_service.send_auth_request("vendor2@example.com"))

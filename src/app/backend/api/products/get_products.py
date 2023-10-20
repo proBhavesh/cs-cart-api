@@ -25,7 +25,7 @@ class ProductsService:
         # If no URL is provided, it defaults to BASE_URL from the global_data file
         self.url = url if url else BASE_URL + "/api/products/"
 
-    def send_auth_request(self):
+    def get_products(self):
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Basic {self.credentials}",
@@ -33,6 +33,32 @@ class ProductsService:
 
         try:
             response = requests.get(self.url, headers=headers)
+            return self._handle_response(response)
+        except requests.exceptions.RequestException as e:
+            return {"Error": str(e)}
+
+    def create_product(
+        self, product_name, category_ids, price, vendor_id=None, image_pairs=None
+    ):
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Basic {self.credentials}",
+        }
+
+        payload = {
+            "product": product_name,
+            "category_ids": category_ids,
+            "price": price,
+        }
+
+        if vendor_id:
+            payload["vendor_id"] = vendor_id
+
+        if image_pairs:
+            payload["image_pairs"] = image_pairs
+
+        try:
+            response = requests.post(self.url, headers=headers, json=payload)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}

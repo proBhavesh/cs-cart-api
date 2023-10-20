@@ -1,5 +1,4 @@
 altair==5.1.2
--e git+https://github.com/radarapps/IQ-10.git@0cfdb27a532778fc7e0488bf857d85c81ec806a4#egg=api&subdirectory=src/app/backend
 attrs==23.1.0
 blinker==1.6.3
 cachetools==5.3.1
