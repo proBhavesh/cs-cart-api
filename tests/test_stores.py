@@ -14,13 +14,14 @@ print(vendor_api_key, vendor_email)
 store_service = StoresService(vendor_email, vendor_api_key)
 
 # Fetch all stores
-json_response = store_service.get_stores()
+# json_response = store_service.get_stores()
+# json_response = store_service.get_stores(1)
 
 # Create a store
 store_data = {
-    "company": "Example Company 3",
-    "storefront": "exampl2.com",
-    "secure_storefront": "exampl2.com",
+    "company": "Example Company 4",
+    "storefront": "examplyy2.com",
+    "secure_storefront": "examgpl2.com",
     "clone_from": "2",
     "clone": {
         "layouts": "i",
@@ -29,7 +30,7 @@ store_data = {
         "categories": "iY"
     }
 }
-# json_response = store_service.create_store(store_data)
+json_response = store_service.create_store(store_data)
 
 # Update a store
 update_data = {

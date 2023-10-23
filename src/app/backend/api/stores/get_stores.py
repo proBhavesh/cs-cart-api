@@ -17,6 +17,7 @@ class StoresService:
         self.credentials = base64.b64encode(
             f"{store_email}:{store_api_key}".encode()
         ).decode()
+        # self.url = url if url else BASE_URL + "/api/products/"
         self.url = url if url else BASE_URL + "/api/stores/"
         self.shipping_url = BASE_URL + "/api/shippings/"
 
