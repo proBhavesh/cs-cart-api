@@ -15,8 +15,8 @@ print(vendor_api_key, vendor_email)
 orders_service = OrdersService(vendor_email, vendor_api_key)
 
 
-# json_response = orders_service.get_orders()
-# json_response = orders_service.get_order(order_id=1)
+json_response = orders_service.get_orders()
+# json_response = orders_service.get_order(1)
 
 # Create an order
 order_data = {
@@ -25,12 +25,12 @@ order_data = {
     "shipping_id": "1",
     "products": {
         "1": {
-            "product_id": "12",
+            "product_id": "2",
             "amount": "1"
         },
         "2": {
-           "product_id": "13",
-           "amount":"2"
+            "product_id": "3",
+            "amount": "2"
         }
     },
     "user_data": {
@@ -53,11 +53,11 @@ order_data = {
         "b_address": "44 Main street"
     }
 }
-json_response =  orders_service.create_order(order_data)
+# json_response = orders_service.create_order(order_data)
 
 # Update an order
 update_data = {
-   "status": "P",
+    "status": "P",
     "user_data": {
         "email": "newemail@example.com",
     },
@@ -67,7 +67,6 @@ update_data = {
 
 # Use AuthService to send authentication requests
 # json_response = orders_service.send_auth_request()
-
 
 
 print(json.dumps(json_response, indent=4))
