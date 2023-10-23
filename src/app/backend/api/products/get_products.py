@@ -352,6 +352,7 @@ class ProductsService:
                 print(response.text)
                 raise ValueError("Response from server was not a valid JSON")
         else:
+            print(response.content)
             raise ConnectionError(
                 f"Request failed with status code {response.status_code}"
             )
