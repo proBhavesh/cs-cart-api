@@ -85,39 +85,57 @@ If you have any questions or suggestions regarding this project, feel free to co
 ```
 IQ-10
 ├─ README.md
-└─ app
-   ├─ api_tests
-   │  ├─ getpages.py
-   │  ├─ test_auth.py
-   │  ├─ test_orders.py
-   │  ├─ test_products.py
-   │  └─ test_shipments.py
-   ├─ backend
-   │  ├─ README.md
-   │  ├─ api
-   │  │  ├─ __init__.py
-   │  │  ├─ auth
-   │  │  │  ├─ __init__.py
-   │  │  │  └─ auth_user.py
-   │  │  ├─ products
-   │  │  │  ├─ __init__.py
-   │  │  │  └─ get_products.py
-   │  │  ├─ shipments
-   │  │  │  ├─ __init__.py
-   │  │  │  ├─ orders.py
-   │  │  │  └─ shipments.py
-   │  │  └─ store
-   │  │     ├─ __init__.py
-   │  │     └─ session_store.py
-   │  ├─ api.egg-info
-   │  │  ├─ PKG-INFO
-   │  │  ├─ SOURCES.txt
-   │  │  ├─ dependency_links.txt
-   │  │  └─ top_level.txt
-   │  ├─ global_data.py
-   │  └─ setup.py
-   ├─ client
-   │  └─ app.py
-   └─ requirements.txt
+├─ config
+├─ src
+│  └─ app
+│     ├─ backend
+│     │  ├─ README.md
+│     │  ├─ api
+│     │  │  ├─ __init__.py
+│     │  │  ├─ api_key_generation
+│     │  │  │  ├─ __init__.py
+│     │  │  │  └─ generate_api_key.py
+│     │  │  ├─ auth
+│     │  │  │  ├─ __init__.py
+│     │  │  │  └─ auth_user.py
+│     │  │  ├─ orders
+│     │  │  │  ├─ __init__.py
+│     │  │  │  └─ get_orders.py
+│     │  │  ├─ products
+│     │  │  │  ├─ __init__.py
+│     │  │  │  └─ get_products.py
+│     │  │  ├─ shipments
+│     │  │  │  ├─ __init__.py
+│     │  │  │  ├─ orders.py
+│     │  │  │  └─ shipments.py
+│     │  │  ├─ store
+│     │  │  │  ├─ __init__.py
+│     │  │  │  └─ session_store.py
+│     │  │  ├─ stores
+│     │  │  │  ├─ __init__.py
+│     │  │  │  └─ get_stores.py
+│     │  │  ├─ users
+│     │  │  │  ├─ __init__.py
+│     │  │  │  └─ get_users.py
+│     │  │  └─ vendors
+│     │  │     ├─ __init__.py
+│     │  │     └─ get_vendors.py
+│     │  ├─ global_data.py
+│     │  ├─ requirements.txt
+│     │  └─ setup.py
+│     └─ client
+│        ├─ app.py
+│        └─ style.css
+└─ tests
+   ├─ getpages.py
+   ├─ test.py
+   ├─ test_api_key_generator.py
+   ├─ test_auth.py
+   ├─ test_orders.py
+   ├─ test_products.py
+   ├─ test_shipments.py
+   ├─ test_stores.py
+   ├─ test_users.py
+   └─ test_vendors.py
 
 ```
