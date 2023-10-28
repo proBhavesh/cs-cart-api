@@ -116,8 +116,17 @@ IQ-10
    │  │  └─ top_level.txt
    │  ├─ global_data.py
    │  └─ setup.py
-   ├─ client
-   │  └─ app.py
+   ├── client/
+   │   ├── app.py                 
+   │   ├── components/           
+   │   │   ├── sidebar.py         
+   │   │   ├── header.py          
+   │   │   ├── footer.py         
+   │   │   ├── plot_component.py 
+   │   │   └── data_table_component.py 
+   │   └── pages/   
+   │       ├── page1.py
+   │       └── page2.py
    └─ requirements.txt
 
 ```

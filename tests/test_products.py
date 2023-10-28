@@ -20,9 +20,9 @@ json_response = product_service.get_products()
 # Create a new product
 # json_response = product_service.create_product("lenovo laptop", [2], "5000")
 
-new_product_id = json_response["product_id"]
+# new_product_id = json_response["product_id"]
 # Update the newly created product
-update_data = {"product": "Apple MacBook Pro", "price": "2000"}
+# update_data = {"product": "Apple MacBook Pro", "price": "2000"}
 # json_response = product_service.update_product(new_product_id, update_data)
 
 # Delete the product
