@@ -1,5 +1,26 @@
 import streamlit as st
 import pandas as pd
+from api.users import UserService
+import os
+from dotenv import load_dotenv
+import json
+
+# Load environment variables
+load_dotenv()
+vendor_email = os.getenv("VENDOR_EMAIL")
+vendor_api_key = os.getenv("VENDOR_API_KEY")
+
+print(vendor_api_key, vendor_email)
+
+# Initialize Session and StoresService
+user_service = UserService(vendor_email, vendor_api_key)
+
+
+# Fetch all users
+json_response = user_service.get_users()
+
+users = pd.json_normalize(json_response['users'])
+users.index = range(1, len(users) + 1)
 
 # Create a Streamlit app for the User Page
 st.title('User Management')
@@ -7,6 +28,8 @@ col1, col2, col3 = st.columns(3)
 col1.metric("Total Users", "123", "User Dashboard")
 
 # Define a function to open the modal for adding a user
+
+
 def create_user_modal():
     with st.form(key='create_user_form'):
         st.header('Add a New User')
@@ -40,6 +63,7 @@ def create_user_modal():
             st.selectbox('Role', ['Admin', 'User'])
             st.text_area('User Description', value='')
 
+
 # Check if the 'Add User' button is clicked
 if st.button('Add User'):
     create_user_modal()
@@ -72,8 +96,6 @@ users_data = [
     }
 ]
 
-# Create a DataFrame from the user data
-df = pd.DataFrame(users_data)
 
 # Display the table using st.dataframe
-st.dataframe(df, width=1000, height=600)
+st.dataframe(users, width=1000, height=len(users)*2)

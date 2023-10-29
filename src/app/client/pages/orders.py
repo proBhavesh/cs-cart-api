@@ -1,13 +1,35 @@
 import streamlit as st
 import pandas as pd
+from api.orders import OrdersService
+import os
+from dotenv import load_dotenv
+import json
+
+# Load environment variables
+load_dotenv()
+vendor_email = os.getenv("VENDOR_EMAIL")
+vendor_api_key = os.getenv("VENDOR_API_KEY")
+
+print(vendor_api_key, vendor_email)
+
+# Initialize SessionStore and AuthService
+orders_service = OrdersService(vendor_email, vendor_api_key)
+
+
+json_response = orders_service.get_orders()
+
+orders = pd.json_normalize(json_response['orders'])
+orders.index = range(1, len(orders) + 1)
 
 # Create a Streamlit app for the Order Page
 st.title('Orders')
 col1, col2, col3 = st.columns(3)
-col1.metric("Total Orders", "567", "Order Dashboard")
+col1.metric("Total Orders", len(orders), "Order Dashboard")
 col2.metric("Total Order Value", "Rs 12345", "Order Dashboard")
 
 # Define a function to open the modal for adding an order
+
+
 def create_order_modal():
     with st.form(key='create_order_form'):
         st.header('Place a New Order')
@@ -40,6 +62,7 @@ def create_order_modal():
             st.number_input('Quantity', min_value=1)
             st.text_input('Customer Name', value='')
             st.text_area('Order Description', value='')
+
 
 # Check if the 'Place Order' button is clicked
 if st.button('Place Order'):
@@ -74,7 +97,7 @@ orders_data = [
 ]
 
 # Create a DataFrame from the order data
-df = pd.DataFrame(orders_data)
+# df = pd.DataFrame(orders_data)
 
 # Display the table using st.dataframe
-st.dataframe(df, width=1000, height=600)
+st.dataframe(orders, width=1000, height=len(orders))

@@ -1,12 +1,31 @@
 import streamlit as st
 import pandas as pd
+from api.products import ProductsService
+import os
+from dotenv import load_dotenv
+import json
+
+load_dotenv()
+vendor_email = os.getenv("VENDOR_EMAIL")
+vendor_api_key = os.getenv("VENDOR_API_KEY")
+
+print(vendor_api_key, vendor_email)
+
+product_service = ProductsService(vendor_email, vendor_api_key)
+
+json_response = product_service.get_products()
+
+products = pd.json_normalize(json_response['products'])
+products.index = range(1, len(products) + 1)
 
 # Create a Streamlit app
 st.title('Products')
 col1, col2, col3 = st.columns(3)
-col1.metric("Total Products", "2345", "Store Dashboard")
+col1.metric("Total Products",  len(products), "Products Dashboard")
 col2.metric("Total Sales", "Rs 2345", "Sales Dashboard")
 # Define a function to open the modal for adding a product
+
+
 def create_product_modal():
     with st.form(key='create_product_form'):
         st.header('Add a New Product')
@@ -14,7 +33,8 @@ def create_product_modal():
         # Add input fields for product information
         product_name = st.text_input('Product Name')
         product_cost = st.text_input('Product Cost')
-        product_image = st.file_uploader('Product Image', type=['jpg', 'png', 'jpeg'])
+        product_image = st.file_uploader(
+            'Product Image', type=['jpg', 'png', 'jpeg'])
         product_description = st.text_area('Product Description')
 
         # Add a submit button
@@ -40,6 +60,7 @@ def create_product_modal():
             st.file_uploader('Product Image', type=['jpg', 'png', 'jpeg'])
             st.text_area('Product Description', value='')
 
+
 # Check if the 'Add Product' button is clicked
 if st.button('Add Product'):
     create_product_modal()
@@ -48,32 +69,40 @@ if st.button('Add Product'):
 st.title('Product Information Table')
 
 # Define the product data as a list of dictionaries
-products_data = [
-    {
-        'Product Name': 'Product A',
-        'Product Cost': 'Rs 100',
-        'Product Image': None,
-        'Product Description': 'Description A',
-        'Product ID': 1
-    },
-    {
-        'Product Name': 'Product B',
-        'Product Cost': 'Rs 200',
-        'Product Image': None,
-        'Product Description': 'Description B',
-        'Product ID': 2
-    },
-    {
-        'Product Name': 'Product C',
-        'Product Cost': 'Rs 150',
-        'Product Image': None,
-        'Product Description': 'Description C',
-        'Product ID': 3
-    }
-]
+# products_data = [
+#     {
+#         'Product Name': 'Product A',
+#         'Product Cost': 'Rs 100',
+#         'Product Image': None,
+#         'Product Description': 'Description A',
+#         'Product ID': 1
+#     },
+#     {
+#         'Product Name': 'Product B',
+#         'Product Cost': 'Rs 200',
+#         'Product Image': None,
+#         'Product Description': 'Description B',
+#         'Product ID': 2
+#     },
+#     {
+#         'Product Name': 'Product C',
+#         'Product Cost': 'Rs 150',
+#         'Product Image': None,
+#         'Product Description': 'Description C',
+#         'Product ID': 3
+#     }
+# ]
 
 # Create a DataFrame from the product data
-df = pd.DataFrame(products_data)
+# df = pd.DataFrame(products_data)
 
 # Display the table using st.dataframe
-st.dataframe(df, width=1000, height=600)
+# st.dataframe(df, width=1000, height=600)
+
+
+# Convert your JSON response to a DataFrame
+products = pd.json_normalize(json_response['products'])
+# print(json_response)
+
+# Display table using st.dataframe
+st.dataframe(products, width=1200, height=len(products)*2)

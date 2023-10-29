@@ -1,12 +1,39 @@
 import streamlit as st
 import pandas as pd
+from api.vendors import VendorsService
+import os
+from dotenv import load_dotenv
+import json
+
+# Load environment variables
+load_dotenv()
+vendor_email = os.getenv("VENDOR_EMAIL")
+vendor_api_key = os.getenv("VENDOR_API_KEY")
+
+print(vendor_api_key, vendor_email)
+
+# Initialize SessionStore and AuthService
+vendor_service = VendorsService(vendor_email, vendor_api_key)
+
+# Use AuthService to send authentication requests
+json_response = vendor_service.get_vendors()
+
+vendor = pd.DataFrame()
+
+if 'vendor' in json_response:
+    vendor = pd.json_normalize(json_response['vendor'])
+    vendor.index = range(1, len(vendor) + 1)
+else:
+    st.write("No vendor data available in the API response.")
 
 # Create a Streamlit app for the Vendor Page
 st.title('Vendor Management')
 col1, col2, col3 = st.columns(3)
-col1.metric("Total Vendors", "50", "Vendor Dashboard")
+col1.metric("Total Vendors", len(vendor), "Vendor Dashboard")
 
 # Define a function to open the modal for adding a vendor
+
+
 def create_vendor_modal():
     with st.form(key='create_vendor_form'):
         st.header('Add a New Vendor')
@@ -40,6 +67,7 @@ def create_vendor_modal():
             st.text_input('Address', value='')
             st.text_area('Vendor Description', value='')
 
+
 # Check if the 'Add Vendor' button is clicked
 if st.button('Add Vendor'):
     create_vendor_modal()
@@ -72,8 +100,6 @@ vendors_data = [
     }
 ]
 
-# Create a DataFrame from the vendor data
-df = pd.DataFrame(vendors_data)
 
 # Display the table using st.dataframe
-st.dataframe(df, width=1000, height=len(df) * 200)
+st.dataframe(vendor, width=1000, height=len(vendor) * 200)

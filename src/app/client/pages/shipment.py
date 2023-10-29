@@ -1,13 +1,39 @@
 import streamlit as st
 import pandas as pd
+from api.shipments import ShipmentService
+import os
+from dotenv import load_dotenv
+import json
+
+# Load environment variables
+load_dotenv()
+vendor_email = os.getenv("VENDOR_EMAIL")
+vendor_api_key = os.getenv("VENDOR_API_KEY")
+
+# Initialize SessionStore and AuthService
+product_service = ShipmentService(vendor_email, vendor_api_key)
+
+# Use AuthService to send authentication requests
+json_response = product_service.send_auth_request()
+
+shipment = pd.DataFrame()
+
+if 'shipment' in json_response:
+    shipment = pd.json_normalize(json_response['shipment'])
+    shipment.index = range(1, len(shipment) + 1)
+else:
+    st.write("'shipment' data not found in the API response")
+
 
 # Create a Streamlit app for the Shipment Page
 st.title('Shipments')
 col1, col2, col3 = st.columns(3)
-col1.metric("Total Shipments", "123", "Shipment Dashboard")
-col2.metric("Total Shipment Value", "Rs 5678", "Shipment Dashboard")
+col1.metric("Total Shipments", len(shipment), "Shipment Dashboard")
+col2.metric("Total Shipment Value", "Rs 0", "Shipment Dashboard")
 
 # Define a function to open the modal for adding a shipment
+
+
 def create_shipment_modal():
     with st.form(key='create_shipment_form'):
         st.header('Add a New Shipment')
@@ -41,6 +67,7 @@ def create_shipment_modal():
             st.text_input('Destination', value='')
             st.text_area('Shipment Description', value='')
 
+
 # Check if the 'Add Shipment' button is clicked
 if st.button('Add Shipment'):
     create_shipment_modal()
@@ -73,8 +100,6 @@ shipments_data = [
     }
 ]
 
-# Create a DataFrame from the shipment data
-df = pd.DataFrame(shipments_data)
 
 # Display the table using st.dataframe
-st.dataframe(df, width=1000, height=600)
+st.dataframe(shipment, width=1000, height=len(shipment))
