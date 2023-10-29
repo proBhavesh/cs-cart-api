@@ -86,8 +86,8 @@ if st.button('Create Store'):
 st.title('Store Information Table')
 
 # Add Edit and Delete buttons with icons
-# edit_icon = "https://image.flaticon.com/icons/svg/565/565026.svg"
-# delete_icon = "https://image.flaticon.com/icons/svg/3221/3221897.svg"
+edit_icon = "https://image.flaticon.com/icons/svg/565/565026.svg"
+delete_icon = "https://image.flaticon.com/icons/svg/3221/3221897.svg"
 
 stores['Actions'] = [f"[Edit]| [Delete]" for _ in range(len(stores))]
 
