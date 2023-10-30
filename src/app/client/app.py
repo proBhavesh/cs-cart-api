@@ -3,6 +3,7 @@ import streamlit as st
 import jwt
 import requests
 from urllib.parse import urlencode
+from streamlit_option_menu import option_menu
 from descope import (
     REFRESH_SESSION_TOKEN_NAME,
     SESSION_TOKEN_NAME,
@@ -10,6 +11,18 @@ from descope import (
     DeliveryMethod,
     DescopeClient,
 )
+
+# Navbar
+# with st.sidebar:
+#     selected = option_menu(
+#         menu_title="Main Menu",
+#         options=["Home", "Product", "About", "Contact"],
+#         icons=["house-door", "bi-box-seam", "bi-person", "bi-envelope"],
+#         menu_icon="cast",
+#         default_index=0,
+#     )
+
+# if selected == "Home":
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 # Define constants for project ID and flow ID
@@ -23,18 +36,17 @@ except Exception as error:
     print("Failed to initialize Descope client. Error:")
     print(error)
 
-
-# Store session token if exists
+    # Store session token if exists
 session_token = st.session_state.get("token", None)
 
-
 # Define helper function to check JWT token validity
+
+
 def is_jwt_expired(token):
     decoded_token = jwt.decode(token, options={"verify_signature": False})
     return decoded_token["exp"] < time.time()
 
-
-# Check session token and JWT expiration
+    # Check session token and JWT expiration
 not_valid_token = session_token and is_jwt_expired(session_token)
 
 # Show Descope login if no token or token is expired
@@ -55,14 +67,14 @@ if not session_token or not_valid_token:
             print("Status Code: " + str(error.status_code))
             print("Error: " + str(error.error_message))
 
-        # Redirect to Descope login
+            # Redirect to Descope login
         st.write(
             f'<a href="{descope_url}" target="_blank">Go to Descope Login</a>',
             unsafe_allow_html=True,
         )
 
-# If logged in (i.e., valid token exists), display user info
-elif session_token and not not_valid_token:
+    # If logged in (i.e., valid token exists), display user info
+if session_token and not not_valid_token:
     try:
         # Validate the session token with Descope
         jwt_response = descope_client.validate_session(
@@ -74,3 +86,11 @@ elif session_token and not not_valid_token:
     except Exception as error:
         st.write("Could not validate user session. Error:")
         st.write(error)
+
+# elif selected == "About":
+#     st.write("This is the About page.")
+# elif selected == "Product":
+#     st.write("This is the Product page.")
+
+# elif selected == "Contact":
+#     st.write("This is the Contact page.")
