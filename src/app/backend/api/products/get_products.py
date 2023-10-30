@@ -65,6 +65,7 @@ class ProductsService:
             response = requests.post(self.url, headers=headers, json=payload)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
+            print("RequestException: ", e)
             return {"Error": str(e)}
 
     def update_product(self, product_id, product_data):
@@ -345,11 +346,11 @@ class ProductsService:
         if response.status_code in [200, 201]:
             try:
                 json_response = response.json()
-                print(json_response)
+                print("_handle_response", json_response)
                 return json_response
 
             except json.JSONDecodeError:
-                print(response.text)
+                print("_handle_response", response.text)
                 raise ValueError("Response from server was not a valid JSON")
         else:
             print(response.content)

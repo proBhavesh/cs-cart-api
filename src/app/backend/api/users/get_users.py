@@ -143,6 +143,7 @@ class UserService:
             try:
                 return response.json()
             except json.JSONDecodeError:
+                print(response.text)
                 raise ValueError("Response from server was not a valid JSON")
         else:
             raise ConnectionError(
