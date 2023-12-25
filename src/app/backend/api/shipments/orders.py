@@ -2,9 +2,7 @@ import os
 import base64
 import requests
 import json
-from global_data import (
-    BASE_URL,
-)
+from ..shared.global_data import BASE_URL
 
 
 class OrderService:

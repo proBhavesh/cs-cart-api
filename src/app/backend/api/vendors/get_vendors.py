@@ -4,9 +4,7 @@ import requests
 import json
 from dotenv import load_dotenv
 
-from global_data import (
-    BASE_URL,
-)
+from ..shared.global_data import BASE_URL
 
 
 class VendorsService:

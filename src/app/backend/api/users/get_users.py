@@ -5,9 +5,7 @@ import json
 from dotenv import load_dotenv
 
 # Importing the global data file to access the BASE_URL
-from global_data import (
-    BASE_URL,
-)
+from ..shared.global_data import BASE_URL
 
 
 class UserService:
