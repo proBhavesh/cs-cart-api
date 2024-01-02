@@ -1,0 +1,16 @@
+run = ["streamlit", "run", "src/app/client/app.py","> /dev/null"]
+entrypoint = "src/app/client/app.py"
+modules = ["python-3.10:v18-20230807-322e88b"]
+
+hidden = [".pythonlibs"]
+
+[nix]
+channel = "stable-23_05"
+
+[unitTest]
+language = "python3"
+
+[deployment]
+run = ["sh", "-c", "streamlit run src/app/client/app.py --server.headless true"]
+deploymentTarget = "gce"
+build = ["sh", "-c", "pip install -r requirements.txt && pip install ./src/app/backend "]
