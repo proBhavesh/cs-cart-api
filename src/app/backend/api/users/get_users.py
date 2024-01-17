@@ -5,7 +5,7 @@ import json
 from dotenv import load_dotenv
 
 # Importing the global data file to access the BASE_URL
-from ..shared.global_data import BASE_URL
+from api import BASE_URL
 
 
 class UserService:
@@ -31,15 +31,14 @@ class UserService:
         response = requests.get(
             self.users_url,
             headers={"Authorization": f"Basic {self.credentials}"},
-            params=params
+            params=params,
         )
         return self._handle_response(response)
 
     def get_user(self, user_id):
         url = self.users_url + str(user_id)
         response = requests.get(
-            url,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
@@ -47,24 +46,21 @@ class UserService:
         response = requests.post(
             self.users_url,
             data=user,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            headers={"Authorization": f"Basic {self.credentials}"},
         )
         return self._handle_response(response)
 
     def update_user(self, user_id, user):
         url = self.users_url + str(user_id)
         response = requests.put(
-            url,
-            data=user,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, data=user, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
     def delete_user(self, user_id):
         url = self.users_url + str(user_id)
         response = requests.delete(
-            url,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
@@ -73,15 +69,14 @@ class UserService:
         response = requests.get(
             self.usergroups_url,
             headers={"Authorization": f"Basic {self.credentials}"},
-            params=params
+            params=params,
         )
         return self._handle_response(response)
 
     def get_usergroup(self, group_id):
         url = self.usergroups_url + str(group_id)
         response = requests.get(
-            url,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
@@ -89,32 +84,28 @@ class UserService:
         response = requests.post(
             self.usergroups_url,
             data=group,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            headers={"Authorization": f"Basic {self.credentials}"},
         )
         return self._handle_response(response)
 
     def update_usergroup(self, group_id, group):
         url = self.usergroups_url + str(group_id)
         response = requests.put(
-            url,
-            data=group,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, data=group, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
     def delete_usergroup(self, group_id):
         url = self.usergroups_url + str(group_id)
         response = requests.delete(
-            url,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
     def get_user_usergroups(self, user_id):
         url = self.url + f"/api/users/{user_id}/usergroups"
         response = requests.get(
-            url,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
@@ -122,17 +113,14 @@ class UserService:
         url = self.url + f"/api/users/{user_id}/usergroups/{group_id}"
         data = {"status": status}
         response = requests.put(
-            url,
-            data=data,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, data=data, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
     def delete_user_from_usergroup(self, user_id, group_id):
         url = self.url + f"/api/users/{user_id}/usergroups/{group_id}"
         response = requests.delete(
-            url,
-            headers={"Authorization": f"Basic {self.credentials}"}
+            url, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 

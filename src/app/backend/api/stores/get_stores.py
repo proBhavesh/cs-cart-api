@@ -4,7 +4,7 @@ import requests
 import json
 from dotenv import load_dotenv
 
-from ..shared.global_data import BASE_URL
+from api import BASE_URL
 
 
 class StoresService:
@@ -36,7 +36,7 @@ class StoresService:
             "Authorization": f"Basic {self.credentials}",
         }
         try:
-            response = requests.get(self.url+str(store_id), headers=headers)
+            response = requests.get(self.url + str(store_id), headers=headers)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -47,8 +47,7 @@ class StoresService:
             "Authorization": f"Basic {self.credentials}",
         }
         try:
-            response = requests.post(
-                self.url, headers=headers, json=store_data)
+            response = requests.post(self.url, headers=headers, json=store_data)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -72,8 +71,7 @@ class StoresService:
             "Authorization": f"Basic {self.credentials}",
         }
         try:
-            response = requests.delete(
-                self.url + str(store_id), headers=headers)
+            response = requests.delete(self.url + str(store_id), headers=headers)
             return response.status_code
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -84,8 +82,7 @@ class StoresService:
             "Authorization": f"Basic {self.credentials}",
         }
         try:
-            response = requests.get(
-                self.shipping_url, headers=headers, params=params)
+            response = requests.get(self.shipping_url, headers=headers, params=params)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -97,7 +94,8 @@ class StoresService:
         }
         try:
             response = requests.get(
-                self.shipping_url + str(shipping_id), headers=headers)
+                self.shipping_url + str(shipping_id), headers=headers
+            )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -109,7 +107,8 @@ class StoresService:
         }
         try:
             response = requests.post(
-                self.shipping_url, headers=headers, json=shipping_data)
+                self.shipping_url, headers=headers, json=shipping_data
+            )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -121,7 +120,9 @@ class StoresService:
         }
         try:
             response = requests.put(
-                self.shipping_url + str(shipping_id), headers=headers, json=shipping_data
+                self.shipping_url + str(shipping_id),
+                headers=headers,
+                json=shipping_data,
             )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
@@ -134,7 +135,8 @@ class StoresService:
         }
         try:
             response = requests.delete(
-                self.shipping_url + str(shipping_id), headers=headers)
+                self.shipping_url + str(shipping_id), headers=headers
+            )
             return response.status_code
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}

@@ -4,7 +4,7 @@ import requests
 import json
 
 # Importing the global data file to access the BASE_URL
-from ..shared.global_data import BASE_URL  # Adjusted import statement based on project structure
+from api import BASE_URL  # Adjusted import statement based on project structure
 
 
 class ShipmentService:

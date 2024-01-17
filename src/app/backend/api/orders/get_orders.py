@@ -4,15 +4,14 @@ import requests
 import json
 from dotenv import load_dotenv
 
-from ..shared.global_data import BASE_URL
+from api import BASE_URL
 
 
 class OrdersService:
     def __init__(self, email, api_key, url=BASE_URL):
         if not email or not api_key:
             raise ValueError("Email and API key must be set")
-        self.credentials = base64.b64encode(
-            f"{email}:{api_key}".encode()).decode()
+        self.credentials = base64.b64encode(f"{email}:{api_key}".encode()).decode()
         self.url = url + "/api/orders/"
 
     def get_orders(self, params={}):
@@ -43,8 +42,7 @@ class OrdersService:
             "Authorization": f"Basic {self.credentials}",
         }
         try:
-            response = requests.post(
-                self.url, headers=headers, json=order_data)
+            response = requests.post(self.url, headers=headers, json=order_data)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -68,8 +66,7 @@ class OrdersService:
             "Authorization": f"Basic {self.credentials}",
         }
         try:
-            response = requests.delete(
-                self.url + str(order_id), headers=headers)
+            response = requests.delete(self.url + str(order_id), headers=headers)
             return response.status_code
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}

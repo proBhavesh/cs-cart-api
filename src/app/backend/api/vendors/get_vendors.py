@@ -4,7 +4,7 @@ import requests
 import json
 from dotenv import load_dotenv
 
-from ..shared.global_data import BASE_URL
+from api import BASE_URL
 
 
 class VendorsService:
@@ -33,7 +33,7 @@ class VendorsService:
             "Authorization": f"Basic {self.credentials}",
         }
         try:
-            response = requests.get(self.url+str(vendor_id), headers=headers)
+            response = requests.get(self.url + str(vendor_id), headers=headers)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
