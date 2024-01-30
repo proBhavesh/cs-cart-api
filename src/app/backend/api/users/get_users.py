@@ -1,11 +1,8 @@
-import os
 import base64
 import requests
 import json
-from dotenv import load_dotenv
 
-# Importing the global data file to access the BASE_URL
-from api import BASE_URL
+from api import BASE_URL, encode_credentials
 
 
 class UserService:
@@ -18,9 +15,7 @@ class UserService:
         if not admin_email or not admin_api_key:
             raise ValueError("Admin email and API key must be set")
 
-        self.credentials = base64.b64encode(
-            f"{admin_email}:{admin_api_key}".encode()
-        ).decode()
+        self.credentials = encode_credentials(admin_email, admin_api_key)
 
         self.url = url if url else BASE_URL
         self.users_url = self.url + "/api/users/"
@@ -29,7 +24,7 @@ class UserService:
     def get_users(self, page=1, items_per_page=10):
         params = {"page": page, "items_per_page": items_per_page}
         response = requests.get(
-            self.users_url,
+            url=self.users_url,
             headers={"Authorization": f"Basic {self.credentials}"},
             params=params,
         )
@@ -38,13 +33,13 @@ class UserService:
     def get_user(self, user_id):
         url = self.users_url + str(user_id)
         response = requests.get(
-            url, headers={"Authorization": f"Basic {self.credentials}"}
+            url=url, headers={"Authorization": f"Basic {self.credentials}"}
         )
         return self._handle_response(response)
 
     def create_user(self, user):
         response = requests.post(
-            self.users_url,
+            url=self.users_url,
             data=user,
             headers={"Authorization": f"Basic {self.credentials}"},
         )

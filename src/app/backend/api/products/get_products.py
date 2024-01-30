@@ -1,52 +1,47 @@
-import os
-import base64
 import requests
 import json
-from dotenv import load_dotenv
+from typing import Any, Dict, Optional
 
-from api import BASE_URL
+# from dotenv import load_dotenv TODO
 
+from api import BASE_URL, encode_credentials
+
+# TODO TODO: Hundreds Of Mistakes, Skipped For Now
 
 class ProductsService:
-    # The URL parameter is now optional and defaults to None
     def __init__(
         self,
-        vendor_email,
-        vendor_api_key,
-        url=None,
+        vendor_email: str,
+        vendor_api_key: str,
+        url: Optional[str] = None,
     ):
         if not vendor_email or not vendor_api_key:
             raise ValueError("Vendor email and API key must be set")
-        self.credentials = base64.b64encode(
-            f"{vendor_email}:{vendor_api_key}".encode()
-        ).decode()
-        # If no URL is provided, it defaults to BASE_URL from the global_data file
+
+        # TODO: You Should The User Base URL Instead Of URL With Endpoints
+        # TODO: Coding Mistakes
+        self.credentials = encode_credentials(vendor_email, vendor_api_key)
         self.url = url if url else BASE_URL + "/api/products/"
         self.product_variation_groups_url = BASE_URL + "/api/product_variations_groups/"
         self.features_url = BASE_URL + "/api/features/"
         self.base_url = (url if url else BASE_URL) + "/api/combinations/"
         self.exceptions_url = (url if url else BASE_URL) + "/api/exceptions/"
 
-    def get_products(self):
-        headers = {
+        self.headers = {
             "Content-Type": "application/json",
             "Authorization": f"Basic {self.credentials}",
         }
 
+    def get_products(self) -> Any | Dict[str, str]:
         try:
-            response = requests.get(self.url, headers=headers)
+            response = requests.get(self.url, headers=self.headers)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def create_product(
-        self, product_name, category_ids, price, vendor_id=None, image_pairs=None
-    ):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
-
+        self, product_name: str, category_ids, price, vendor_id=None, image_pairs=None
+    ): # TODO: Docs Require
         payload = {
             "product": product_name,
             "category_ids": category_ids,
@@ -60,61 +55,43 @@ class ProductsService:
             payload["image_pairs"] = image_pairs
 
         try:
-            response = requests.post(self.url, headers=headers, json=payload)
+            response = requests.post(self.url, headers=self.headers, json=payload)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             print("RequestException: ", e)
             return {"Error": str(e)}
 
     def update_product(self, product_id, product_data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
-
         url = f"{self.url}{product_id}"
 
         try:
-            response = requests.put(url, headers=headers, json=product_data)
+            response = requests.put(url, headers=self.headers, json=product_data)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def delete_product(self, product_id):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
-
         url = f"{self.url}{product_id}"
 
         try:
-            response = requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=self.headers)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def get_product_features(self, product_id):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
         try:
             response = requests.get(
-                self.url + str(product_id) + "/features", headers=headers
+                self.url + str(product_id) + "/features", headers=self.headers
             )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def update_product_features(self, product_id, product_data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
         try:
             response = requests.put(
-                self.url + str(product_id), headers=headers, json=product_data
+                self.url + str(product_id), headers=self.headers, json=product_data
             )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
@@ -122,63 +99,47 @@ class ProductsService:
 
     # Feature related methods
     def get_features(self, params={}):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
         try:
-            response = requests.get(self.features_url, headers=headers, params=params)
+            response = requests.get(
+                self.features_url, headers=self.headers, params=params
+            )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def get_feature(self, feature_id):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
         try:
             response = requests.get(
-                self.features_url + str(feature_id), headers=headers
+                self.features_url + str(feature_id), headers=self.headers
             )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def create_feature(self, feature_data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
         try:
             response = requests.post(
-                self.features_url, headers=headers, json=feature_data
+                self.features_url, headers=self.headers, json=feature_data
             )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def update_feature(self, feature_id, feature_data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
         try:
             response = requests.put(
-                self.features_url + str(feature_id), headers=headers, json=feature_data
+                self.features_url + str(feature_id),
+                headers=self.headers,
+                json=feature_data,
             )
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def delete_feature(self, feature_id):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {self.credentials}",
-        }
         try:
             response = requests.delete(
-                self.features_url + str(feature_id), headers=headers
+                self.features_url + str(feature_id), headers=self.headers
             )
             return response.status_code
         except requests.exceptions.RequestException as e:
@@ -218,97 +179,65 @@ class ProductsService:
         return self._handle_response(response)
 
     def create_variation_group(self, data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
         response = requests.post(
-            self.product_variation_groups_url, headers=headers, data=json.dumps(data)
+            self.product_variation_groups_url,
+            headers=self.headers,
+            data=json.dumps(data),
         )
         return self._handle_response(response)
 
     def get_variation_groups(self):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
-        response = requests.get(self.product_variation_groups_url, headers=headers)
+        response = requests.get(self.product_variation_groups_url, headers=self.headers)
         return self._handle_response(response)
 
     def get_variation_group(self, id_or_code):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
         response = requests.get(
-            self.product_variation_groups_url + id_or_code, headers=headers
+            self.product_variation_groups_url + id_or_code, headers=self.headers
         )
         return self._handle_response(response)
 
     def update_variation_group(self, id_or_code, data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
         response = requests.put(
             self.product_variation_groups_url + id_or_code,
-            headers=headers,
+            headers=self.headers,
             data=json.dumps(data),
         )
         return self._handle_response(response)
 
     def delete_variation_group(self, id_or_code):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
         response = requests.delete(
-            self.product_variation_groups_url + id_or_code, headers=headers
+            self.product_variation_groups_url + id_or_code, headers=self.headers
         )
         return self._handle_response(response)
 
     def list_product_options(self, product_id):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
-        response = requests.get(self.url + f"{product_id}/options", headers=headers)
+        response = requests.get(
+            self.url + f"{product_id}/options", headers=self.headers
+        )
         return self._handle_response(response)
 
     def get_specific_option(self, option_id):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
-        response = requests.get(self.url + f"options/{option_id}", headers=headers)
+        response = requests.get(self.url + f"options/{option_id}", headers=self.headers)
         return self._handle_response(response)
 
     def create_option(self, data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
         response = requests.post(
-            self.url + "options/", headers=headers, data=json.dumps(data)
+            self.url + "options/", headers=self.headers, data=json.dumps(data)
         )
         return self._handle_response(response)
 
     def update_option(self, option_id, data):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
         response = requests.put(
-            self.url + f"options/{option_id}", headers=headers, data=json.dumps(data)
+            self.url + f"options/{option_id}",
+            headers=self.headers,
+            data=json.dumps(data),
         )
         return self._handle_response(response)
 
     def delete_option(self, option_id):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Basic " + self.credentials,
-        }
-        response = requests.delete(self.url + f"options/{option_id}", headers=headers)
+        response = requests.delete(
+            self.url + f"options/{option_id}", headers=self.headers
+        )
         return self._handle_response(response)
 
     def list_option_combinations(self, product_id, items_per_page=None, page=None):
