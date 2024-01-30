@@ -1,27 +1,24 @@
-import os
-import base64
+from typing import Any, Dict, Optional
 import requests
 import json
-from api import BASE_URL
+from api import BASE_URL, encode_credentials
 
 
 class OrderService:
     # The URL parameter is now optional and defaults to None
     def __init__(
         self,
-        vendor_email,
-        vendor_api_key,
-        url=None,
+        vendor_email: str,
+        vendor_api_key: str,
+        url: Optional[str] = None,
     ):
         if not vendor_email or not vendor_api_key:
             raise ValueError("Vendor email and API key must be set")
-        self.credentials = base64.b64encode(
-            f"{vendor_email}:{vendor_api_key}".encode()
-        ).decode()
-        # If no URL is provided, it defaults to BASE_URL from the global_data file
+
+        self.credentials = encode_credentials(vendor_email, vendor_api_key)
         self.url = url if url else BASE_URL
 
-    def send_auth_request(self):
+    def send_auth_request(self) -> Any | Dict[str, str]:
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Basic {self.credentials}",

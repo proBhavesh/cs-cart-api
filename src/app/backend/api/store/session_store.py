@@ -21,3 +21,6 @@ class SessionStore:
         This function retrieves the session key for a specific user.
         """
         return self.session_keys.get(user_email)
+
+
+# TODO: What is this?
