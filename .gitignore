@@ -5,6 +5,7 @@ menv
 build/
 dist/
 test.sh
+TODO
 
 # Compiled Python files
 *.pyc
