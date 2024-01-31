@@ -4,6 +4,7 @@ api.egg-info/
 menv
 build/
 dist/
+test.sh
 
 # Compiled Python files
 *.pyc
