@@ -1,19 +1,18 @@
 from typing import Any, Dict, Optional
+from urllib.parse import urljoin
 import requests
 import json
-
-# from dotenv import load_dotenv TODO
 
 from api import BASE_URL, encode_credentials
 
 
 class OrdersService:
-    def __init__(self, email, api_key, url=BASE_URL):
+    def __init__(self, email: str, api_key: str):
         if not email or not api_key:
             raise ValueError("Email and API key must be set")
 
         self.credentials = encode_credentials(email, api_key)
-        self.url = url + "/api/orders/"  # TODO: Wrong Assumption Verified
+        self.url = BASE_URL + "/api/orders/"
 
         self.headers = {
             "Content-Type": "application/json",
@@ -28,37 +27,32 @@ class OrdersService:
             return {"Error": str(e)}
 
     def get_order(self, order_id: int) -> Any | Dict[str, str]:
+        url = urljoin(self.url, str(order_id))
         try:
-            response = requests.get(self.url + str(order_id), headers=self.headers)
+            response = requests.get(url=url, headers=self.headers)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
-    def create_order(
-        self, order_data: Dict
-    ) -> Any | Dict[str, str]:  # TODO: Verify order data hint
+    def create_order(self, order_data: Dict[str, Any]) -> Any | Dict[str, str]:
         try:
-            response = requests.post(
-                url=self.url, headers=self.headers, json=order_data
-            )
+            response = requests.post(url=self.url, headers=self.headers, json=order_data)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
-    def update_order(
-        self, order_id: int, order_data: Dict
-    ) -> Any | Dict[str, str]:  # TODO: Verify order data hint
+    def update_order(self, order_id: int, order_data: Dict[str, Any]) -> Any | Dict[str, str]:
+        url = urljoin(self.url, str(order_id))
         try:
-            response = requests.put(
-                url=self.url + str(order_id), headers=self.headers, json=order_data
-            )
+            response = requests.put(url=url, headers=self.headers, json=order_data)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def delete_order(self, order_id: int) -> int | Dict[str, str]:
+        url = urljoin(self.url, str(order_id))
         try:
-            response = requests.delete(url=self.url + str(order_id), headers=self.headers)
+            response = requests.delete(url=url, headers=self.headers)
             return response.status_code
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -67,7 +61,6 @@ class OrdersService:
         if response.status_code in [200, 201, 204]:
             try:
                 json_response = response.json()
-                print(json_response)
                 return json_response
             except json.JSONDecodeError:
                 raise ValueError("Response from server was not valid JSON")
