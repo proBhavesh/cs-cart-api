@@ -1,4 +1,5 @@
 import json
+from urllib.parse import urljoin
 import requests
 from typing import Any, Dict, Optional
 
@@ -18,21 +19,22 @@ class VendorsService:
             "Authorization": f"Basic {self.credentials}",
         }
 
-    def get_vendors(self, params: Optional[Dict] = None) -> Any | dict[str, str]:
+    def get_vendors(self, params: Optional[Dict] = None) -> Any | Dict[str, str]:
         try:
             response = requests.get(url=self.url, headers=self.headers, params=params)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
-    def get_vendor(self, vendor_id) -> Any | dict[str, str]:
+    def get_vendor(self, vendor_id) -> Any | Dict[str, str]:
+        url = urljoin(self.url, str(vendor_id))
         try:
-            response = requests.get(url=self.url + str(vendor_id), headers=self.headers)
+            response = requests.get(url=url, headers=self.headers)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
-    def create_vendor(self, vendor_data) -> Any | dict[str, str]:
+    def create_vendor(self, vendor_data) -> Any | Dict[str, str]:
         try:
             response = requests.post(
                 url=self.url, headers=self.headers, json=vendor_data
@@ -41,20 +43,18 @@ class VendorsService:
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
-    def update_vendor(self, vendor_id, vendor_data) -> Any | dict[str, str]:
+    def update_vendor(self, vendor_id, vendor_data) -> Any | Dict[str, str]:
+        url = urljoin(self.url, str(vendor_id))
         try:
-            response = requests.put(
-                self.url + str(vendor_id), headers=self.headers, json=vendor_data
-            )
+            response = requests.put(url=url, headers=self.headers, json=vendor_data)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
-    def delete_vendor(self, vendor_id) -> Any | dict[str, str]:
+    def delete_vendor(self, vendor_id) -> Any | Dict[str, str]:
+        url = urljoin(self.url, str(vendor_id))
         try:
-            response = requests.delete(
-                url=self.url + str(vendor_id), headers=self.headers
-            )  # TODO: url+id, whats that?
+            response = requests.delete(url=url, headers=self.headers)
             return response.status_code
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
@@ -63,13 +63,10 @@ class VendorsService:
         if response.status_code in [200, 201]:
             try:
                 json_response = response.json()
-                # print(json_response)
                 return json_response
             except json.JSONDecodeError:
-                # print(response.text)
                 raise ValueError("Response from server was not a valid JSON")
         else:
-            # print(response.content)
             raise ConnectionError(
                 f"Request failed with status code {response.status_code}"
             )

@@ -12,7 +12,7 @@ class OrdersService:
             raise ValueError("Email and API key must be set")
 
         self.credentials = encode_credentials(email, api_key)
-        self.url = BASE_URL + "/api/orders/"
+        self.url = urljoin(BASE_URL, "/api/orders/")
 
         self.headers = {
             "Content-Type": "application/json",
@@ -65,6 +65,4 @@ class OrdersService:
             except json.JSONDecodeError:
                 raise ValueError("Response from server was not valid JSON")
         else:
-            raise ConnectionError(
-                f"Request failed with status code {response.status_code}"
-            )
+            raise ConnectionError(f"Request failed with status code {response.status_code}")
