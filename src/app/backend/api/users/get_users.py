@@ -19,56 +19,56 @@ class UserService:
         self.credentials = encode_credentials(admin_email, admin_api_key)
         self.headers = {"Authorization": f"Basic {self.credentials}"}
 
-    def get_users(self, page=1, items_per_page=10):
+    def get_users(self, page: int = 1, items_per_page: int = 10):
         params = {"page": page, "items_per_page": items_per_page}
         return self._handle_request(url=self.users_url, method="GET", params=params)
 
-    def get_user(self, user_id):
+    def get_user(self, user_id: int):
         url = urljoin(self.users_url, str(user_id))
         return self._handle_request(url=url, method="GET")
 
-    def create_user(self, user):
+    def create_user(self, user: Dict):
         return self._handle_request(url=self.users_url, method="POST", data=user)
 
-    def update_user(self, user_id, user):
+    def update_user(self, user_id: int, user: Dict):
         url = urljoin(self.users_url, str(user_id))
         return self._handle_request(url=url, method="PUT", data=user)
 
-    def delete_user(self, user_id):
+    def delete_user(self, user_id: int):
         url = urljoin(self.users_url, str(user_id))
         return self._handle_request(url=url, method="DELETE")
 
-    def get_usergroups(self, page=1, items_per_page=10):
+    def get_usergroups(self, page: int = 1, items_per_page: int = 10):
         params = {"page": page, "items_per_page": items_per_page}
         return self._handle_request(
             url=self.usergroups_url, method="GET", params=params
         )
 
-    def get_usergroup(self, group_id):
+    def get_usergroup(self, group_id: int):
         url = urljoin(self.usergroups_url, str(group_id))
         return self._handle_request(url=url, method="GET")
 
     def create_usergroup(self, group):
         return self._handle_request(url=self.usergroups_url, method="POST", data=group)
 
-    def update_usergroup(self, group_id, group):
+    def update_usergroup(self, group_id: int, group):
         url = urljoin(self.usergroups_url, str(group_id))
         return self._handle_request(url=url, method="PUT", data=group)
 
-    def delete_usergroup(self, group_id):
+    def delete_usergroup(self, group_id: int):
         url = urljoin(self.usergroups_url, str(group_id))
         return self._handle_request(url=url, method="DELETE")
 
-    def get_user_usergroups(self, user_id):
+    def get_user_usergroups(self, user_id: int):
         url = urljoin(self.url, f"/api/users/{user_id}/usergroups")
         return self._handle_request(url=url, method="GET")
 
-    def update_user_usergroup_status(self, user_id, group_id, status):
+    def update_user_usergroup_status(self, user_id: int, group_id: int, status: str):
         url = urljoin(self.url, f"/api/users/{user_id}/usergroups/{group_id}")
         data = {"status": status}
         return self._handle_request(url=url, method="PUT", data=data)
 
-    def delete_user_from_usergroup(self, user_id, group_id):
+    def delete_user_from_usergroup(self, user_id: int, group_id: int):
         url = urljoin(self.url, f"/api/users/{user_id}/usergroups/{group_id}")
         return self._handle_request(url=url, method="DELETE")
 

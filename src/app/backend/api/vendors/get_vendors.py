@@ -8,8 +8,7 @@ from api import BASE_URL, encode_credentials
 
 class VendorsService:
     def __init__(
-        self, vendor_email: str, vendor_api_key: str, url: Optional[str] = None
-    ):
+        self, vendor_email: str, vendor_api_key: str):
         if not vendor_email or not vendor_api_key:
             raise ValueError("Vendor email and API key must be set")
        
@@ -23,18 +22,18 @@ class VendorsService:
     def get_vendors(self, params: Optional[Dict] = None) -> Any | Dict[str, str]:
         return self._handle_request(method="GET", params=params)
 
-    def get_vendor(self, vendor_id) -> Any | Dict[str, str]:
+    def get_vendor(self, vendor_id: int) -> Any | Dict[str, str]:
         url = urljoin(self.url, str(vendor_id))
         return self._handle_request(url=url, method="GET")
 
-    def create_vendor(self, vendor_data) -> Any | Dict[str, str]:
+    def create_vendor(self, vendor_data: Dict) -> Any | Dict[str, str]:
         return self._handle_request(method="POST", json=vendor_data)
 
-    def update_vendor(self, vendor_id, vendor_data) -> Any | Dict[str, str]:
+    def update_vendor(self, vendor_id: int, vendor_data: Dict) -> Any | Dict[str, str]:
         url = urljoin(self.url, str(vendor_id))
         return self._handle_request(url=url, method="PUT", json=vendor_data)
 
-    def delete_vendor(self, vendor_id) -> Any | Dict[str, str]:
+    def delete_vendor(self, vendor_id: int) -> Any | Dict[str, str]:
         url = urljoin(self.url, str(vendor_id))
         return self._handle_request(url=url, method="DELETE")
 

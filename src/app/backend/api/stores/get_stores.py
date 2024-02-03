@@ -1,5 +1,6 @@
 import json
 from statistics import median
+from turtle import st
 from urllib.parse import urljoin
 import requests
 from typing import Any, Dict, Optional
@@ -24,18 +25,20 @@ class StoresService:
     def get_stores(self, params: Optional[Dict] = None) -> Any | Dict[str, str]:
         return self._handle_request(method="GET", params=params)
 
-    def get_store(self, store_id) -> Any | Dict[str, str]:
+    def get_store(self, store_id: int) -> Any | Dict[str, str]:
         url = urljoin(self.url, str(store_id))
         return self._handle_request(url=url, method="GET")
 
-    def create_store(self, store_data) -> Any | Dict[str, str]:
+    def create_store(self, store_data: Dict[str, Any]) -> Any | Dict[str, str]:
         return self._handle_request(method="POST", json=store_data)
 
-    def update_store(self, store_id: int, store_data) -> Any | Dict[str, str]:
+    def update_store(
+        self, store_id: int, store_data: Dict[str, Any]
+    ) -> Any | Dict[str, str]:
         url = urljoin(self.url, str(store_id))
         return self._handle_request(url=url, method="PUT", json=store_data)
 
-    def delete_store(self, store_id) -> int | Dict[str, str]:
+    def delete_store(self, store_id: int) -> int | Dict[str, str]:
         url = urljoin(self.url, str(store_id))
         return self._handle_request(url=url, method="DELETE")
         # try:
@@ -44,25 +47,23 @@ class StoresService:
         # except requests.exceptions.RequestException as e:
         #     return {"Error": str(e)}
 
-    def get_shipping_methods(self, params: Dict = {}) -> Any | Dict[str, str]:
+    def get_shipping_methods(self, params: Optional[Dict] = None) -> Any | Dict[str, str]:
         return self._handle_request(url=self.shipping_url, method="GET", params=params)
 
-    def get_shipping_method(self, shipping_id) -> Any | Dict[str, str]:
+    def get_shipping_method(self, shipping_id: int) -> Any | Dict[str, str]:
         url = urljoin(self.shipping_url, str(shipping_id))
         self._handle_request(url=url, method="GET")
 
-    def create_shipping_method(self, shipping_data) -> Any | Dict[str, str]:
+    def create_shipping_method(self, shipping_data: Dict[str, Any]) -> Any | Dict[str, str]:
         return self._handle_request(
             url=self.shipping_url, method="POST", json=shipping_data
         )
 
-    def update_shipping_method(
-        self, shipping_id, shipping_data
-    ) -> Any | Dict[str, str]:
+    def update_shipping_method(self, shipping_id: int, shipping_data: Dict[str, Any]) -> Any | Dict[str, str]:
         url = urljoin(self.shipping_url, str(shipping_id))
         return self._handle_request(url=url, method="PUT", json=shipping_data)
 
-    def delete_shipping_method(self, shipping_id) -> int | Dict[str, str]:
+    def delete_shipping_method(self, shipping_id: int) -> int | Dict[str, str]:
         url = urljoin(self.shipping_url, str(shipping_id))
         return self._handle_request(url=url, method="DELETE")
         # try:
