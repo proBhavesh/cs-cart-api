@@ -1,5 +1,4 @@
-from base64 import b64encode
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from urllib.parse import urljoin
 import requests
 import json
@@ -20,20 +19,19 @@ class APIKeyGeneratorService:
             "Content-Type": "application/json",
             "Authorization": f"Basic {self.credentials}",
         }
-        payload = json.dumps({"vendor_email": vendor_email})
+        data = json.dumps({"vendor_email": vendor_email})
 
         try:
-            response = requests.post(url=self.url, headers=headers, data=payload)
+            response = requests.post(url=self.url, headers=headers, data=data)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             return {"Error": str(e)}
 
     def _handle_response(self, response: Any) -> Dict:
-        if response.status_code in [200, 201]:
-            try:
-                json_response = response.json()
-                return json_response
-            except json.JSONDecodeError:
-                raise ValueError("Response from server was not a valid JSON")
-        else:
-            raise ConnectionError(f"Request failed with status code {response.status_code}")
+        try:
+            response.raise_for_status()
+            json_response = response.json()
+            return json_response
+        except (requests.exceptions.HTTPError, json.JSONDecodeError) as e:
+            print(f"Error: {e}")
+            return {"Error": str(e)}

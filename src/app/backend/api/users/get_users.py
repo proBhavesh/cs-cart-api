@@ -1,4 +1,6 @@
 import base64
+from distutils.core import setup_keywords
+from typing import Any, Dict, Optional
 from urllib.parse import urljoin
 import requests
 import json
@@ -15,81 +17,108 @@ class UserService:
         self.users_url = urljoin(self.url, "/api/users/")
         self.usergroups_url = urljoin(self.url, "/api/usergroups/")
         self.credentials = encode_credentials(admin_email, admin_api_key)
-        self.header = {"Authorization": f"Basic {self.credentials}"}
+        self.headers = {"Authorization": f"Basic {self.credentials}"}
 
     def get_users(self, page=1, items_per_page=10):
         params = {"page": page, "items_per_page": items_per_page}
-        response = requests.get(url=self.users_url, headers=self.header, params=params)
-        return self._handle_response(response)
+        return self._handle_request(url=self.users_url, method="GET", params=params)
 
     def get_user(self, user_id):
-        url = self.users_url + str(user_id)
-        response = requests.get(url=url, headers=self.header)
-        return self._handle_response(response)
+        url = urljoin(self.users_url, str(user_id))
+        return self._handle_request(url=url, method="GET")
 
     def create_user(self, user):
-        response = requests.post(url=self.users_url, data=user, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=self.users_url, method="POST", data=user)
 
     def update_user(self, user_id, user):
         url = urljoin(self.users_url, str(user_id))
-        response = requests.put(url=url, data=user, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=url, method="PUT", data=user)
 
     def delete_user(self, user_id):
-        url = self.users_url + str(user_id)
-        response = requests.delete(url=url, headers=self.header)
-        return self._handle_response(response)
+        url = urljoin(self.users_url, str(user_id))
+        return self._handle_request(url=url, method="DELETE")
 
     def get_usergroups(self, page=1, items_per_page=10):
         params = {"page": page, "items_per_page": items_per_page}
-        response = requests.get(
-            url=self.usergroups_url, headers=self.header, params=params
+        return self._handle_request(
+            url=self.usergroups_url, method="GET", params=params
         )
-        return self._handle_response(response)
 
     def get_usergroup(self, group_id):
         url = urljoin(self.usergroups_url, str(group_id))
-        response = requests.get(url, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=url, method="GET")
 
     def create_usergroup(self, group):
-        response = requests.post(
-            url=self.usergroups_url, data=group, headers=self.header
-        )
-        return self._handle_response(response)
+        return self._handle_request(url=self.usergroups_url, method="POST", data=group)
 
     def update_usergroup(self, group_id, group):
         url = urljoin(self.usergroups_url, str(group_id))
-        response = requests.put(url, data=group, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=url, method="PUT", data=group)
 
     def delete_usergroup(self, group_id):
         url = urljoin(self.usergroups_url, str(group_id))
-        response = requests.delete(url, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=url, method="DELETE")
 
     def get_user_usergroups(self, user_id):
         url = urljoin(self.url, f"/api/users/{user_id}/usergroups")
-        response = requests.get(url, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=url, method="GET")
 
     def update_user_usergroup_status(self, user_id, group_id, status):
         url = urljoin(self.url, f"/api/users/{user_id}/usergroups/{group_id}")
         data = {"status": status}
-        response = requests.put(url, data=data, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=url, method="PUT", data=data)
 
     def delete_user_from_usergroup(self, user_id, group_id):
         url = urljoin(self.url, f"/api/users/{user_id}/usergroups/{group_id}")
-        response = requests.delete(url, headers=self.header)
-        return self._handle_response(response)
+        return self._handle_request(url=url, method="DELETE")
 
-    def _handle_response(self, response):
-        if response.status_code in [200, 201, 204]:
-            try:
-                return response.json()
-            except json.JSONDecodeError:
-                raise ValueError("Response from server was not a valid JSON")
+    def _handle_response(self, response: Any) -> Dict:
+        try:
+            response.raise_for_status()
+            json_response = response.json()
+            return json_response
+        except (requests.exceptions.HTTPError, json.JSONDecodeError) as e:
+            print(f"Error: {e}")
+            return {"Error": str(e)}
+
+    def _handle_request(
+        self,
+        *,
+        url: Optional[str] = None,
+        method: Optional[str] = None,
+        headers: Optional[Dict] = None,
+        json: Optional[Dict] = None,
+        data: Optional[Dict] = None,
+        params: Optional[Dict] = None,
+    ) -> Any | Dict[str, int | str]:
+        if url:
+            _url = url
         else:
-            raise ConnectionError(f"Request failed with status code {response.status_code}")
+            _url = self.url
+
+        if headers:
+            _headers = headers
+        else:
+            _headers = self.headers
+
+        try:
+            if method == "GET":
+                response = requests.get(
+                    url=_url, headers=_headers, params=params, data=data
+                )
+            elif method == "POST":
+                response = requests.post(
+                    url=_url, headers=_headers, json=json, data=data
+                )
+            elif method == "PUT":
+                response = requests.put(
+                    url=_url, headers=_headers, json=json, data=data
+                )
+            elif method == "DELETE":
+                response = requests.delete(url=_url, headers=_headers)
+            else:
+                raise ValueError("Unsupported HTTP method")
+            return self._handle_response(response)
+        except requests.exceptions.RequestException as e:
+            print(f"RequestException ({method}): {e}")
+            return {"Error": str(e)}
