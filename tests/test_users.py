@@ -15,7 +15,7 @@ user_service = UserService(vendor_email, vendor_api_key)
 
 
 # Fetch all users
-json_response = user_service.get_users()
+# json_response = user_service.get_users()
 # json_response = user_service.get_users(1, 20)
 
 # Fetch a specific user
@@ -55,7 +55,7 @@ update_data = {
 # json_response = user_service.get_usergroups()
 
 # Fetch a specific usergroup
-# json_response = user_service.get_usergroup('group_id')
+# json_response = user_service.get_usergroup(2)
 
 # Create a usergroup
 group_data = {

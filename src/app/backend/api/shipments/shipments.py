@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from urllib.parse import urljoin
 import requests
 import json

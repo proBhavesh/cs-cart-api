@@ -1,5 +1,3 @@
-import base64
-from distutils.core import setup_keywords
 from typing import Any, Dict, Optional
 from urllib.parse import urljoin
 import requests
@@ -19,8 +17,8 @@ class UserService:
         self.credentials = encode_credentials(admin_email, admin_api_key)
         self.headers = {"Authorization": f"Basic {self.credentials}"}
 
-    def get_users(self, page: int = 1, items_per_page: int = 10):
-        params = {"page": page, "items_per_page": items_per_page}
+    def get_users(self, page: int = 1, items_per_page: int = 10, user_type: str = "C"):
+        params = {"page": page, "items_per_page": items_per_page, "user_type": user_type}
         return self._handle_request(url=self.users_url, method="GET", params=params)
 
     def get_user(self, user_id: int):

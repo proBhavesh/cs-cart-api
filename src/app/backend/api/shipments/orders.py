@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 import requests
 import json
 from api import BASE_URL, encode_credentials
