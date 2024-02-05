@@ -8,11 +8,11 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-KINDE_HOST = os.getenv('KINDE_HOST')
-KINDE_CLIENT_ID = os.getenv('KINDE_CLIENT_ID')
-KINDE_CLIENT_SECRET = os.getenv('KINDE_CLIENT_SECRET')
-KINDE_REDIRECT_URL = os.getenv('KINDE_REDIRECT_URL')
-KINDE_POST_LOGOUT_REDIRECT_URL = os.getenv('KINDE_POST_LOGOUT_REDIRECT_URL')
+KINDE_HOST = os.getenv("KINDE_HOST")
+KINDE_CLIENT_ID = os.getenv("KINDE_CLIENT_ID")
+KINDE_CLIENT_SECRET = os.getenv("KINDE_CLIENT_SECRET")
+KINDE_REDIRECT_URL = os.getenv("KINDE_REDIRECT_URL")
+KINDE_POST_LOGOUT_REDIRECT_URL = os.getenv("KINDE_POST_LOGOUT_REDIRECT_URL")
 
 # Kinde Configuration
 configuration = Configuration(host=KINDE_HOST)
@@ -24,28 +24,38 @@ kinde_api_client_params = {
     "client_secret": KINDE_CLIENT_SECRET,
     "grant_type": GrantType.AUTHORIZATION_CODE,
     "callback_url": KINDE_REDIRECT_URL,
-    "code_verifier": CODE_VERIFIER
+    "code_verifier": CODE_VERIFIER,
 }
 
 kinde_client = KindeApiClient(**kinde_api_client_params)
 
 # Streamlit UI
-st.title('Streamlit App with Kinde Authentication')
+st.title("Streamlit App with Kinde Authentication")
 
-if 'access_token' not in st.session_state:
-    st.session_state['access_token'] = None
 
-if st.session_state['access_token'] is None:
+if "access_token" not in st.session_state:
+    st.session_state["access_token"] = None
+
+print(kinde_client.is_authenticated())
+if kinde_client.is_authenticated():
+    user_details = kinde_client.get_user_details()
+    print("User details:", user_details)  # Added print statement
+
+if st.session_state["access_token"] is None:
     login_url = kinde_client.get_login_url()
-    st.sidebar.markdown(f"[Login with Kinde]({login_url})")
+    print("Login URL:", login_url)  # Added print statement
+    st.markdown(f"[Login with Kinde]({login_url})")  # Changed from sidebar to main page
 else:
     user_details = kinde_client.get_user_details()
-    print("this is user details",user_details)
-    user_email = user_details.get('email', 'No email available')
-    st.sidebar.write(f"Welcome {user_details['given_name']} {user_details['family_name']}")
+    print("User details:", user_details)  # Added print statement
+    user_email = user_details.get("email", "No email available")
+    st.sidebar.write(
+        f"Welcome {user_details['given_name']} {user_details['family_name']}"
+    )
     st.sidebar.write(f"Email: {user_email}")
 
-    if st.sidebar.button('Logout'):
+    if st.sidebar.button("Logout"):
         logout_url = kinde_client.logout(redirect_to=KINDE_POST_LOGOUT_REDIRECT_URL)
-        st.session_state['access_token'] = None
+        print("Logout URL:", logout_url)  # Added print statement
+        st.session_state["access_token"] = None
         st.experimental_rerun()
