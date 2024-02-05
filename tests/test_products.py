@@ -18,7 +18,10 @@ product_service = ProductsService(vendor_email, vendor_api_key)
 # json_response = product_service.get_products()
 
 # Create a new product
-json_response = product_service.create_product("lenovo laptop", [2], "5000")
+json_response = product_service.create_product(
+    {"product": "lenovo laptop", "price": "500"}
+)
+print(json_response)
 
 # new_product_id = json_response["product_id"]
 # Update the newly created product
