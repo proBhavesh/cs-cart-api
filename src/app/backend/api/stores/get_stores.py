@@ -1,6 +1,4 @@
 import json
-from statistics import median
-from turtle import st
 from urllib.parse import urljoin
 import requests
 from typing import Any, Dict, Optional

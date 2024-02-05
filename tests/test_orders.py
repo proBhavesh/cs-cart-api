@@ -1,73 +1,74 @@
-# example usage
-from api.orders import OrdersService
-import os
-from dotenv import load_dotenv
+import unittest
 import json
+from unittest.mock import MagicMock, patch
+from api import BASE_URL, encode_credentials
+from api.orders import OrdersService
 
-# Load environment variables
-load_dotenv()
-vendor_email = os.getenv("VENDOR_EMAIL")
-vendor_api_key = os.getenv("VENDOR_API_KEY")
+class TestOrdersService(unittest.TestCase):
 
-print(vendor_api_key, vendor_email)
+    def setUp(self):
+        self.email = "test@example.com"
+        self.api_key = "abcdefg123456"
+        self.orders_service = OrdersService(email=self.email, api_key=self.api_key)
 
-# Initialize SessionStore and AuthService
-orders_service = OrdersService(vendor_email, vendor_api_key)
+    def test_get_orders(self):
+        response_data = [{"order_id": 1, "status": "pending"}, {"order_id": 2, "status": "completed"}]
+        with patch("requests.get") as mock_get:
+            mock_get.return_value.json.return_value = response_data
+            orders = self.orders_service.get_orders()
+            self.assertIsInstance(orders, list)
+            self.assertEqual(len(orders), 2)
+            self.assertIsInstance(orders[0], dict)
+            self.assertTrue("order_id" in orders[0])
+            self.assertTrue("status" in orders[0])
+
+    def test_get_order(self):
+        order_id = 1
+        response_data = {"order_id": order_id, "status": "pending", "total_price": 10.99}
+        with patch("requests.get") as mock_get:
+            url = self.orders_service.url + str(order_id)
+            mock_get.return_value.json.return_value = response_data
+            order = self.orders_service.get_order(order_id=order_id)
+            self.assertIsInstance(order, dict)
+            self.assertTrue("order_id" in order)
+            self.assertEqual(order["order_id"], order_id)
+            self.assertTrue("status" in order)
+            self.assertEqual(order["status"], "pending")
+
+    def test_create_order(self):
+        new_order = {"item": "product", "quantity": 2, "price": 15.99}
+        response_data = {"order_id": 3, "status": "created"}
+        with patch("requests.post") as mock_post:
+            mock_post.return_value.json.return_value = response_data
+            order = self.orders_service.create_order(new_order)
+            self.assertIsInstance(order, dict)
+            self.assertTrue("order_id" in order)
+            self.assertEqual(order["order_id"], 3)
+            self.assertTrue("status" in order)
+            self.assertEqual(order["status"], "created")
+
+    # TODO: 
+    def test_update_order(self):
+        order_id = 1
+        new_order = {"status": "processing"}
+        with patch("requests.put") as mock_put:
+            url = self.orders_service.url + str(order_id)
+            mock_put.return_value.json.return_value = {"status": "processing"}
+            self.orders_service.update_order(order_id=order_id, order_data=new_order)
+            order = self.orders_service.get_order(order_id=order_id)
+            self.assertIsInstance(order, dict)
+            self.assertEqual(order["status"], "processing")
+
+    # TODO: Fix Return Type
+    def test_delete_order(self):
+        order_id = 1
+        with patch("requests.delete") as mock_delete:
+            url = self.orders_service.url + str(order_id)
+            mock_delete.return_value.status_code = 204
+            result = self.orders_service.delete_order(order_id=order_id)
+            print(result)
+            self.assertEqual(result, None)
 
 
-json_response = orders_service.get_orders()
-# json_response = orders_service.get_order(1)
-
-# Create an order
-order_data = {
-    "user_id": "0",
-    "payment_id": "2",
-    "shipping_id": "1",
-    "products": {
-        "1": {
-            "product_id": "2",
-            "amount": "1"
-        },
-        "2": {
-            "product_id": "3",
-            "amount": "2"
-        }
-    },
-    "user_data": {
-        "email": "guest@example.com",
-        "firstname": "Guest",
-        "lastname": "Guest",
-        "s_firstname": "Guest",
-        "s_lastname": "Guest",
-        "s_country": "US",
-        "s_city": "Boston",
-        "s_state": "MA",
-        "s_zipcode": "02125",
-        "s_address": "44 Main street",
-        "b_firstname": "Guest",
-        "b_lastname": "Guest",
-        "b_country": "US",
-        "b_city": "Boston",
-        "b_state": "MA",
-        "b_zipcode": "02125",
-        "b_address": "44 Main street"
-    }
-}
-# json_response = orders_service.create_order(order_data)
-
-# Update an order
-update_data = {
-    "status": "P",
-    "user_data": {
-        "email": "newemail@example.com",
-    },
-    "total": "100"
-}
-# json_response =  orders_service.update_order(order_id=1, order_data=update_data)
-
-# Use AuthService to send authentication requests
-# json_response = orders_service.send_auth_request()
-
-
-print(json.dumps(json_response, indent=4))
-# print(auth_service.send_auth_request("vendor2@example.com"))
+if __name__ == "__main__":
+    unittest.main()
