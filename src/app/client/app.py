@@ -1,70 +1,51 @@
-# Import the necessary libraries
 import streamlit as st
-import jwt
-import requests
-from urllib.parse import urlencode
-from descope import (
-    REFRESH_SESSION_TOKEN_NAME,
-    SESSION_TOKEN_NAME,
-    AuthException,
-    DeliveryMethod,
-    DescopeClient,
-)
+from kinde_sdk import Configuration
+from kinde_sdk.kinde_api_client import KindeApiClient, GrantType
+from authlib.common.security import generate_token
+import os
+from dotenv import load_dotenv
 
-# Define constants for project ID and flow ID
-PROJECT_ID = "P2S34yZ72qTTPfxD45n4Er0Qlws3"
-FLOW_ID = "sign-up-or-in"
+# Load environment variables
+load_dotenv()
 
-# Create Descope client
-try:
-    descope_client = DescopeClient(project_id=PROJECT_ID)
-except Exception as error:
-    st.error("Failed to initialize Descope client.")
-    st.error(f"Error: {error}")
+KINDE_HOST = os.getenv('KINDE_HOST')
+KINDE_CLIENT_ID = os.getenv('KINDE_CLIENT_ID')
+KINDE_CLIENT_SECRET = os.getenv('KINDE_CLIENT_SECRET')
+KINDE_REDIRECT_URL = os.getenv('KINDE_REDIRECT_URL')
+KINDE_POST_LOGOUT_REDIRECT_URL = os.getenv('KINDE_POST_LOGOUT_REDIRECT_URL')
 
-# Store session token if exists
-session_token = st.session_state.get("token", None)
+# Kinde Configuration
+configuration = Configuration(host=KINDE_HOST)
+CODE_VERIFIER = generate_token(48)
+kinde_api_client_params = {
+    "configuration": configuration,
+    "domain": KINDE_HOST,
+    "client_id": KINDE_CLIENT_ID,
+    "client_secret": KINDE_CLIENT_SECRET,
+    "grant_type": GrantType.AUTHORIZATION_CODE,
+    "callback_url": KINDE_REDIRECT_URL,
+    "code_verifier": CODE_VERIFIER
+}
 
-# Define helper function to check JWT token validity
-import time
+kinde_client = KindeApiClient(**kinde_api_client_params)
 
+# Streamlit UI
+st.title('Streamlit App with Kinde Authentication')
 
-def is_jwt_expired(token):
-    decoded_token = jwt.decode(token, options={"verify_signature": False})
-    return decoded_token["exp"] < time.time()
+if 'access_token' not in st.session_state:
+    st.session_state['access_token'] = None
 
+if st.session_state['access_token'] is None:
+    login_url = kinde_client.get_login_url()
+    st.sidebar.markdown(f"[Login with Kinde]({login_url})")
+else:
+    user_details = kinde_client.get_user_details()
+    print("this is user details",user_details)
+    user_email = user_details.get('email', 'No email available')
+    st.sidebar.write(f"Welcome {user_details['given_name']} {user_details['family_name']}")
+    st.sidebar.write(f"Email: {user_email}")
 
-# Check session token and JWT expiration
-not_valid_token = session_token and is_jwt_expired(session_token)
-
-# Show Descope login if no token or token is expired
-if not session_token or not_valid_token:
-    # Descope login URL
-    descope_url = "http://localhost:8501"
-
-    tenant_email = "vendor@example.com"
-    # Create a button that when clicked will redirect user to Descope login
-    if st.button("Log In With Descope Flows"):
-        try:
-            resp = descope_client.saml.start(
-                tenant=tenant_email, return_url=descope_url
-            )
-            st.write("Successfully started saml auth.")
-            st.write(f"URL: {resp}")
-        except AuthException as error:
-            st.error("Failed to start saml auth")
-            st.error(f"Status Code: {error.status_code}")
-            st.error(f"Error: {error.error_message}")
-
-# If logged in (i.e., valid token exists), display user info
-if session_token and not not_valid_token:
-    try:
-        # Validate the session token with Descope
-        jwt_response = descope_client.validate_session(session_token=session_token)
-
-        # If successful, display user info
-        st.success("Successfully validated user session:")
-        st.json(jwt_response)
-    except Exception as error:
-        st.error("Could not validate user session.")
-        st.error(error)
+    if st.sidebar.button('Logout'):
+        logout_url = kinde_client.logout(redirect_to=KINDE_POST_LOGOUT_REDIRECT_URL)
+        st.session_state['access_token'] = None
+        st.experimental_rerun()
