@@ -11,18 +11,18 @@ vendor_email = os.getenv("VENDOR_EMAIL")
 vendor_api_key = os.getenv("VENDOR_API_KEY")
 
 # Initialize SessionStore and AuthService
-product_service = ShipmentService(vendor_email, vendor_api_key)
+# product_service = ShipmentService(vendor_email, vendor_api_key)
 
 # Use AuthService to send authentication requests
-json_response = product_service.send_auth_request()
+# json_response = product_service.send_auth_request()
 
 shipment = pd.DataFrame()
 
-if 'shipment' in json_response:
-    shipment = pd.json_normalize(json_response['shipment'])
-    shipment.index = range(1, len(shipment) + 1)
-else:
-    st.write("'shipment' data not found in the API response")
+# if 'shipment' in json_response:
+#     shipment = pd.json_normalize(json_response['shipment'])
+#     shipment.index = range(1, len(shipment) + 1)
+# else:
+st.write("'shipment' data not found in the API response")
 
 
 # Create a Streamlit app for the Shipment Page
@@ -102,4 +102,4 @@ shipments_data = [
 
 
 # Display the table using st.dataframe
-st.dataframe(shipment, width=1000, height=len(shipment))
+st.dataframe(shipments_data, width=1000, height=len(shipment))

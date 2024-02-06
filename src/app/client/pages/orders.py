@@ -72,32 +72,32 @@ with st.form(key="create_order_form"):
 st.title("Order Information Table")
 
 # Define the order data as a list of dictionaries
-# orders_data = [
-#     {
-#         'Product Name': 'Product A',
-#         'Quantity': 2,
-#         'Customer Name': 'Customer A',
-#         'Order Description': 'Description A',
-#         'Order ID': 1
-#     },
-#     {
-#         'Product Name': 'Product B',
-#         'Quantity': 3,
-#         'Customer Name': 'Customer B',
-#         'Order Description': 'Description B',
-#         'Order ID': 2
-#     },
-#     {
-#         'Product Name': 'Product C',
-#         'Quantity': 1,
-#         'Customer Name': 'Customer C',
-#         'Order Description': 'Description C',
-#         'Order ID': 3
-#     }
-# ]
+orders_data = [
+    {
+        'Product Name': 'Product A',
+        'Quantity': 2,
+        'Customer Name': 'Customer A',
+        'Order Description': 'Description A',
+        'Order ID': 1
+    },
+    {
+        'Product Name': 'Product B',
+        'Quantity': 3,
+        'Customer Name': 'Customer B',
+        'Order Description': 'Description B',
+        'Order ID': 2
+    },
+    {
+        'Product Name': 'Product C',
+        'Quantity': 1,
+        'Customer Name': 'Customer C',
+        'Order Description': 'Description C',
+        'Order ID': 3
+    }
+]
 
 # Create a DataFrame from the order data
-# df = pd.DataFrame(orders_data)
+df = pd.DataFrame(orders_data)
 
 # Display the table using st.dataframe
-st.dataframe(orders, width=1000, height=len(orders))
+st.dataframe(orders_data, width=1000, height=len(orders))
