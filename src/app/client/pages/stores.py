@@ -14,16 +14,16 @@ vendor_api_key = os.getenv("VENDOR_API_KEY")
 print(vendor_api_key, vendor_email)
 
 # Initialize Session and StoresService
-# store_service = StoresService(vendor_email, vendor_api_key)
+store_service = StoresService(vendor_email, vendor_api_key)
 
 # Fetch all stores
-# json_response = store_service.get_stores()
+json_response = store_service.get_stores()
 
-# stores = pd.json_normalize(json_response['stores'])
-# stores.index = range(1, len(stores) + 1)
+stores = pd.json_normalize(json_response['stores'])
+stores.index = range(1, len(stores) + 1)
 
 st.title('Stores')
-stores = [1,2]
+
 col1, col2, col3 = st.columns(3)
 col1.metric("Total stores", len(stores), "Store Dashboard")
 col2.metric("Total Sales", "Rs 2345", "Sales Dashboard")
@@ -91,5 +91,7 @@ delete_icon = "https://image.flaticon.com/icons/svg/3221/3221897.svg"
 
 # stores['Actions'] = [f"[Edit]| [Delete]" for _ in range(len(stores))]
 
+df = pd.DataFrame(stores)
+
 # Display the table using st.dataframe
-st.dataframe(stores, width=800, height=len(stores))
+st.dataframe(df, width=800, height=len(stores))

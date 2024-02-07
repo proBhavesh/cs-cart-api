@@ -16,15 +16,14 @@ vendor_api_key = os.getenv("VENDOR_API_KEY")
 print(vendor_api_key, vendor_email)
 
 # Initialize SessionStore and AuthService
-# orders_service = OrdersService(vendor_email, vendor_api_key)
+orders_service = OrdersService(vendor_email, vendor_api_key)
 
 
-# json_response = orders_service.get_orders()
+json_response = orders_service.get_orders()
 
-# orders = pd.json_normalize(json_response["orders"])
-# orders.index = range(1, len(orders) + 1)
+orders = pd.json_normalize(json_response["orders"])
+orders.index = range(1, len(orders) + 1)
 
-orders = [1, 2]
 # Create a Streamlit app for the Order Page
 st.title("Orders")
 col1, col2, col3 = st.columns(3)
@@ -100,4 +99,4 @@ orders_data = [
 df = pd.DataFrame(orders_data)
 
 # Display the table using st.dataframe
-st.dataframe(orders_data, width=1000, height=len(orders))
+st.dataframe(orders, width=1000, height=len(orders))
