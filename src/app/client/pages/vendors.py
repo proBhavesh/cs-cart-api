@@ -13,18 +13,18 @@ vendor_api_key = os.getenv("VENDOR_API_KEY")
 print(vendor_api_key, vendor_email)
 
 # Initialize SessionStore and AuthService
-vendor_service = VendorsService(vendor_email, vendor_api_key)
+# vendor_service = VendorsService(vendor_email, vendor_api_key)
 
 # Use AuthService to send authentication requests
-json_response = vendor_service.get_vendors()
+# json_response = vendor_service.get_vendors()
 
 vendor = pd.DataFrame()
 
-if 'vendor' in json_response:
-    vendor = pd.json_normalize(json_response['vendor'])
-    vendor.index = range(1, len(vendor) + 1)
-else:
-    st.write("No vendor data available in the API response.")
+# if 'vendor' in json_response:
+#     vendor = pd.json_normalize(json_response['vendor'])
+#     vendor.index = range(1, len(vendor) + 1)
+# else:
+#     st.write("No vendor data available in the API response.")
 
 # Create a Streamlit app for the Vendor Page
 st.title('Vendor Management')
@@ -102,4 +102,4 @@ vendors_data = [
 
 
 # Display the table using st.dataframe
-st.dataframe(vendor, width=1000, height=len(vendor) * 200)
+st.dataframe(vendors_data, width=1000, height=len(vendor) * 200)

@@ -9,7 +9,7 @@ load_dotenv()
 vendor_email = os.getenv("VENDOR_EMAIL")
 vendor_api_key = os.getenv("VENDOR_API_KEY")
 print(vendor_api_key, vendor_email)
-product_service = ProductsService(vendor_email, vendor_api_key)
+# product_service = ProductsService(vendor_email, vendor_api_key)
 
 
 # Create a Streamlit app
