@@ -13,14 +13,14 @@ vendor_api_key = os.getenv("VENDOR_API_KEY")
 print(vendor_api_key, vendor_email)
 
 # Initialize Session and StoresService
-# user_service = UserService(vendor_email, vendor_api_key)
+user_service = UserService(vendor_email, vendor_api_key)
 
 
 # Fetch all users
-# json_response = user_service.get_users()
-
-# users = pd.json_normalize(json_response['users'])
-# users.index = range(1, len(users) + 1)
+json_response = user_service.get_users()
+print(json_response)
+users = pd.json_normalize(json_response['users'])
+users.index = range(1, len(users) + 1)
 
 # Create a Streamlit app for the User Page
 st.title('User Management')
@@ -98,4 +98,4 @@ users_data = [
 
 
 # Display the table using st.dataframe
-st.dataframe(users_data, width=1000, height=len(users_data)*2)
+st.dataframe(users, width=1000, height=len(users_data)*2)
