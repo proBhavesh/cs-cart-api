@@ -15,7 +15,6 @@ vendor_service = VendorsService(vendor_email, vendor_api_key)
 # Fetch vendor data
 json_response = vendor_service.get_vendors()
 
-print(json_response)
 # Initialize an empty DataFrame for vendors
 vendors_data = pd.DataFrame()
 
