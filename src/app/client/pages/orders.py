@@ -13,7 +13,6 @@ load_dotenv()
 vendor_email = os.getenv("VENDOR_EMAIL")
 vendor_api_key = os.getenv("VENDOR_API_KEY")
 
-print(vendor_api_key, vendor_email)
 
 # Initialize SessionStore and AuthService
 orders_service = OrdersService(vendor_email, vendor_api_key)
@@ -26,7 +25,7 @@ orders.index = range(1, len(orders) + 1)
 st.title("Orders")
 col1, col2, col3 = st.columns(3)
 col1.metric("Total Orders", len(orders), "Order Dashboard")
-col2.metric("Total Order Value", "Rs 12345", "Order Dashboard")
+col2.metric("Total Order Value", "$ NA", "Order Dashboard")
 
 
 def submitted():
@@ -55,18 +54,18 @@ def submitted():
 #     st.session_state["Order Description"] = ""
 
 
-with st.form(key="create_order_form"):
-    st.header("Place a New Order")
+# with st.form(key="create_order_form"):
+#     st.header("Place a New Order")
 
-    st.text_input("Product Name", key="Product Name")
-    st.number_input("Quantity", min_value=1, key="Quantity")
-    st.text_input("Customer Name", key="Customer Name")
-    st.text_area("Order Description", key="Order Description")
+#     st.text_input("Product Name", key="Product Name")
+#     st.number_input("Quantity", min_value=1, key="Quantity")
+#     st.text_input("Customer Name", key="Customer Name")
+#     st.text_area("Order Description", key="Order Description")
 
-    submit_button = st.form_submit_button("Place Order")
+#     submit_button = st.form_submit_button("Place Order")
 
-if submit_button:
-    submitted()
+# if submit_button:
+#     submitted()
 
 # Display the order information table
 st.title("Order Information Table")
