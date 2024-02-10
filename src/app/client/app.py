@@ -22,6 +22,7 @@ KINDE_DOMAIN = os.getenv("KINDE_DOMAIN")
 AUTHORIZE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/auth"
 TOKEN_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/token"
 REVOKE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/revoke"
+KINDE_REDIRECT_URI = os.getenv("KINDE_REDIRECT_URI")
 
 if "auth" not in st.session_state or not email:
     # cookie_manager = stx.CookieManager()
@@ -42,7 +43,7 @@ if "auth" not in st.session_state or not email:
     result = oauth2.authorize_button(
         name="Continue with Kinde",
         icon="https://kinde.com/icon.svg",
-        redirect_uri="http://localhost:8501/",
+        redirect_uri=KINDE_REDIRECT_URI,
         scope="openid email profile",
         key="kinde",
         use_container_width=True,
