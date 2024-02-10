@@ -10,17 +10,10 @@ from utils.helpers import generateAPIKey
 
 load_dotenv()
 
-cookie_manager = stx.CookieManager()
-if cookie_manager.get(cookie="email"):
-    st.write(cookie_manager.get(cookie="email"))
-# st.write(cookie_manager.get("token", key="token_auth"))
-# import logging
-# logging.basicConfig(level=logging.INFO)
-
-st.title("KINDE OIDC Example")
-st.write(
-    "This example shows how to use the raw OAuth2 component to authenticate with a Kinde OAuth2 ."
-)
+cookie_manager = stx.CookieManager(key="outer_cookie")
+email = cookie_manager.get(cookie="email")
+st.write(email)
+st.session_state["auth"] = email
 
 
 # create an OAuth2Component instance
@@ -31,8 +24,12 @@ AUTHORIZE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/auth"
 TOKEN_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/token"
 REVOKE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/revoke"
 
-if "auth" not in st.session_state:
+if "auth" not in st.session_state and not email:
     # cookie_manager = stx.CookieManager()
+    st.title("KINDE OIDC Example")
+    st.write(
+        "This example shows how to use the raw OAuth2 component to authenticate with a Kinde OAuth2 ."
+    )
 
     # create a button to start the OAuth2 flow
     oauth2 = OAuth2Component(
@@ -66,7 +63,7 @@ if "auth" not in st.session_state:
         st.session_state["auth"] = email
         st.session_state["token"] = result["token"]
         st.rerun()
-else:
+elif not email:
     cookie_manager = stx.CookieManager()
     st.write("You are logged in!")
     st.write(st.session_state["auth"])
