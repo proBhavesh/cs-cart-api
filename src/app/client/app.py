@@ -13,7 +13,6 @@ load_dotenv()
 cookie_manager = stx.CookieManager(key="outer_cookie")
 email = cookie_manager.get(cookie="email")
 st.write(email)
-st.session_state["auth"] = email
 
 
 # create an OAuth2Component instance
@@ -24,7 +23,7 @@ AUTHORIZE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/auth"
 TOKEN_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/token"
 REVOKE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/revoke"
 
-if "auth" not in st.session_state and not email:
+if "auth" not in st.session_state or not email:
     # cookie_manager = stx.CookieManager()
     st.title("KINDE OIDC Example")
     st.write(
