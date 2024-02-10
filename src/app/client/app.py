@@ -1,61 +1,80 @@
 import streamlit as st
-from kinde_sdk import Configuration
-from kinde_sdk.kinde_api_client import KindeApiClient, GrantType
-from authlib.common.security import generate_token
+from streamlit_oauth import OAuth2Component
 import os
+import base64
+import json
+import extra_streamlit_components as stx
 from dotenv import load_dotenv
 
-# Load environment variables
+from utils.helpers import generateAPIKey
+
 load_dotenv()
 
-KINDE_HOST = os.getenv("KINDE_HOST")
-KINDE_CLIENT_ID = os.getenv("KINDE_CLIENT_ID")
-KINDE_CLIENT_SECRET = os.getenv("KINDE_CLIENT_SECRET")
-KINDE_REDIRECT_URL = os.getenv("KINDE_REDIRECT_URL")
-KINDE_POST_LOGOUT_REDIRECT_URL = os.getenv("KINDE_POST_LOGOUT_REDIRECT_URL")
+cookie_manager = stx.CookieManager()
+if cookie_manager.get(cookie="email"):
+    st.write(cookie_manager.get(cookie="email"))
+# st.write(cookie_manager.get("token", key="token_auth"))
+# import logging
+# logging.basicConfig(level=logging.INFO)
 
-# Kinde Configuration
-configuration = Configuration(host=KINDE_HOST)
-CODE_VERIFIER = generate_token(48)
-kinde_api_client_params = {
-    "configuration": configuration,
-    "domain": KINDE_HOST,
-    "client_id": KINDE_CLIENT_ID,
-    "client_secret": KINDE_CLIENT_SECRET,
-    "grant_type": GrantType.AUTHORIZATION_CODE,
-    "callback_url": KINDE_REDIRECT_URL,
-    "code_verifier": CODE_VERIFIER,
-}
-
-kinde_client = KindeApiClient(**kinde_api_client_params)
-
-# Streamlit UI
-st.title("Streamlit App with Kinde Authentication")
+st.title("KINDE OIDC Example")
+st.write(
+    "This example shows how to use the raw OAuth2 component to authenticate with a Kinde OAuth2 ."
+)
 
 
-if "access_token" not in st.session_state:
-    st.session_state["access_token"] = None
+# create an OAuth2Component instance
+CLIENT_ID = os.getenv("KINDE_CLIENT_ID")
+CLIENT_SECRET = os.getenv("KINDE_CLIENT_SECRET")
+KINDE_DOMAIN = os.getenv("KINDE_DOMAIN")
+AUTHORIZE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/auth"
+TOKEN_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/token"
+REVOKE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/revoke"
 
-print(kinde_client.is_authenticated())
-if kinde_client.is_authenticated():
-    user_details = kinde_client.get_user_details()
-    print("User details:", user_details)  # Added print statement
+if "auth" not in st.session_state:
+    # cookie_manager = stx.CookieManager()
 
-if st.session_state["access_token"] is None:
-    login_url = kinde_client.get_login_url()
-    print("Login URL:", login_url)  # Added print statement
-    st.markdown(f"[Login with Kinde]({login_url})")  # Changed from sidebar to main page
-else:
-    user_details = kinde_client.get_user_details()
-    print("User details:", user_details)  # Added print statement
-    user_email = user_details.get("email", "No email available")
-    st.sidebar.write(
-        f"Welcome {user_details['given_name']} {user_details['family_name']}"
+    # create a button to start the OAuth2 flow
+    oauth2 = OAuth2Component(
+        CLIENT_ID,
+        CLIENT_SECRET,
+        AUTHORIZE_ENDPOINT,
+        TOKEN_ENDPOINT,
+        TOKEN_ENDPOINT,
+        REVOKE_ENDPOINT,
     )
-    st.sidebar.write(f"Email: {user_email}")
+    result = oauth2.authorize_button(
+        name="Continue with Kinde",
+        icon="https://kinde.com/icon.svg",
+        redirect_uri="http://localhost:8501/",
+        scope="openid email profile",
+        key="kinde",
+        use_container_width=True,
+    )
 
-    if st.sidebar.button("Logout"):
-        logout_url = kinde_client.logout(redirect_to=KINDE_POST_LOGOUT_REDIRECT_URL)
-        print("Logout URL:", logout_url)  # Added print statement
-        st.session_state["access_token"] = None
-        st.experimental_rerun()
+    if result:
+        st.write(result)
+        # decode the id_token jwt and get the user's email address
+        id_token = result["token"]["id_token"]
+        # verify the signature is an optional step for security
+        payload = id_token.split(".")[1]
+        # add padding to the payload if needed
+        payload += "=" * (-len(payload) % 4)
+        payload = json.loads(base64.b64decode(payload))
+        # print(payload)
+        email = payload["email"]
+        st.session_state["auth"] = email
+        st.session_state["token"] = result["token"]
+        st.rerun()
+else:
+    cookie_manager = stx.CookieManager()
+    st.write("You are logged in!")
+    st.write(st.session_state["auth"])
+    st.write(st.session_state["token"])
+    # print(st.session_state["token"])
+    # print(generateAPIKey(st.session_state["auth"]))
+    cookie_manager.set("email", st.session_state["auth"], key="email")
+    cookie_manager.set("token", st.session_state["token"], key="token_auth")
+    if st.button("Logout"):
+        del st.session_state["auth"]
+        del st.session_state["token"]
