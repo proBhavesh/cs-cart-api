@@ -10,9 +10,10 @@ from utils.helpers import generateAPIKey
 
 load_dotenv()
 
-cookie_manager = stx.CookieManager(key="outer_cookie")
-email = cookie_manager.get(cookie="email")
-st.write(email)
+# cookie_manager = stx.CookieManager(key="outer_cookie")
+# if cookie_manager.get(cookie="email"):
+#     email = cookie_manager.get(cookie="email")
+#     st.write(email)
 
 
 # create an OAuth2Component instance
@@ -24,7 +25,7 @@ TOKEN_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/token"
 REVOKE_ENDPOINT = f"https://{KINDE_DOMAIN}/oauth2/revoke"
 KINDE_REDIRECT_URI = os.getenv("KINDE_REDIRECT_URI")
 
-if "auth" not in st.session_state or not email:
+if "auth" not in st.session_state:
     # cookie_manager = stx.CookieManager()
     st.title("KINDE OIDC Example")
     st.write(
@@ -63,8 +64,8 @@ if "auth" not in st.session_state or not email:
         st.session_state["auth"] = email
         st.session_state["token"] = result["token"]
         st.rerun()
-elif not email:
-    cookie_manager = stx.CookieManager()
+else:
+    cookie_manager = stx.CookieManager(key="inner_cookie")
     st.write("You are logged in!")
     st.write(st.session_state["auth"])
     st.write(st.session_state["token"])
