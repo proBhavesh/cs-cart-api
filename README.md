@@ -34,6 +34,10 @@ To get started with this project, follow the instructions below.
    pip install -r requirements.txt
    ```
 
+   ```shell
+   pip install -e ./src/app/backend
+   ```
+
 4. Set up your CS-Cart API credentials:
 
    - Open the `.env.example` file and update the `API_KEY` and `API_SECRET` fields with your CS-Cart API key and secret.

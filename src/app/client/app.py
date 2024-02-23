@@ -10,10 +10,10 @@ from utils.helpers import generateAPIKey
 
 load_dotenv()
 
-# cookie_manager = stx.CookieManager(key="outer_cookie")
-# if cookie_manager.get(cookie="email"):
-#     email = cookie_manager.get(cookie="email")
-#     st.write(email)
+cookie_manager = stx.CookieManager(key="outer_cookie")
+if cookie_manager.get(cookie="email"):
+    email = cookie_manager.get(cookie="email")
+    st.write(email)
 
 
 # create an OAuth2Component instance
