@@ -1,6 +1,6 @@
-# Project Name: CS-Cart API Integration with Streamlit
+# CS-Cart API Integration with Streamlit
 
-This project demonstrates the integration of the CS-Cart API with a Streamlit web application. CS-Cart is an e-commerce platform that provides a powerful API for interacting with its functionality programmatically. Streamlit is a Python library for building interactive web applications.
+It is an integration of the CS-Cart API with a Streamlit web application. CS-Cart is an e-commerce platform that provides a powerful API for interacting with its functionality programmatically. Streamlit is a Python library for building interactive web applications.
 
 ## Getting Started
 
@@ -41,6 +41,27 @@ To get started with this project, follow the instructions below.
 4. Set up your CS-Cart API credentials:
 
    - Open the `.env.example` file and update the `API_KEY` and `API_SECRET` fields with your CS-Cart API key and secret.
+
+### Docker Support
+
+If you prefer to use Docker, you can run the project using a Docker container.
+
+#### Prerequisites for Docker:
+
+- Docker installed on your system.
+
+#### Steps to use Docker:
+
+1. Build the Docker image:
+
+   ```shell
+   docker build -t cs-cart-streamlit-app .
+   ```
+
+2. Run
+   ```shell
+   docker run -p 8501:8501 cs-cart-streamlit-app
+   ```
 
 ## Usage
 
@@ -85,6 +106,8 @@ If you have any questions or suggestions regarding this project, feel free to co
 
 - Name: Bhavesh Choudhary
 - Email: probhavsh@gmail.com
+
+## Project Structure
 
 ```
 IQ-10
