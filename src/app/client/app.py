@@ -26,10 +26,10 @@ if controller.get("email"):
     controller.set("email", controller.get("email"))
     controller.set("token", controller.get("token"))
     st.write(controller.get("email"))
-    if st.button("Logout"):
-        controller.remove("email")
-        controller.remove("token")
-        st.experimental_rerun()
+    # if st.button("Logout"):
+    #     controller.remove("email")
+    #     controller.remove("token")
+    #     st.experimental_rerun()
 else:
     st.title("KINDE OIDC Example")
     st.write(
