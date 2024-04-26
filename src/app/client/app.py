@@ -26,10 +26,10 @@ if controller.get("email"):
     controller.set("email", controller.get("email"))
     controller.set("token", controller.get("token"))
     st.write(controller.get("email"))
-    # if st.button("Logout"):
-    #     controller.remove("email")
-    #     controller.remove("token")
-    #     st.experimental_rerun()
+    if st.button("Logout"):
+        controller.remove("email")
+        controller.remove("token")
+        st.experimental_rerun()
 else:
     st.title("KINDE OIDC Example")
     st.write(
@@ -51,9 +51,11 @@ else:
         key="kinde",
         use_container_width=True,
     )
+    st.write(result)
 
     if result:
         # Decode the ID token to get the user's email address
+        st.write("This is inside result")
         id_token = result["token"]["id_token"]
         payload = id_token.split(".")[1]
         payload += "=" * (-len(payload) % 4)  # Correct padding for Base64 decoding
@@ -62,4 +64,4 @@ else:
         controller.set("email", email)
         controller.set("token", result["token"])
 
-        st.experimental_rerun()
+        st.rerun()
